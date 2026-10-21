@@ -8,6 +8,7 @@ export const albums = [
     color: "#7a4e3b",
     height: 240,
     note: "Álbum que mistura maracatu, rock e hip-hop e marcou o movimento manguebeat.",
+    track: "A Cidade",
   },
   {
     id: 2,
@@ -18,6 +19,7 @@ export const albums = [
     color: "#c98b3a",
     height: 232,
     note: "Gravado durante o exílio em Londres, combina MPB, rock e influências internacionais.",
+    track: "You Don't Know Me",
   },
   {
     id: 3,
@@ -28,6 +30,7 @@ export const albums = [
     color: "#4f6b55",
     height: 226,
     note: "Um dos álbuns mais emblemáticos do reggae, com mensagens de resistência e esperança.",
+    track: "Jamming",
   },
   {
     id: 4,
@@ -38,6 +41,7 @@ export const albums = [
     color: "#2f4a5a",
     height: 230,
     note: "Disco que levou o grunge ao grande público, impulsionado pelo sucesso de Smells Like Teen Spirit.",
+    track: "Smells Like Teen Spirit",
   },
   {
     id: 5,
@@ -48,6 +52,7 @@ export const albums = [
     color: "#6e8a8a",
     height: 238,
     note: "Clássico dos Beatles, conhecido pela capa icônica e pela sequência musical do lado B.",
+    track: "Come Together",
   },
   {
     id: 6,
@@ -58,6 +63,7 @@ export const albums = [
     color: "#8a8a5c",
     height: 240,
     note: "Explora as raízes brasileiras com sonoridades rurais, tropicalistas e nordestinas.",
+    track: "Refazenda",
   },
   {
     id: 7,
@@ -68,6 +74,7 @@ export const albums = [
     color: "#5c5470",
     height: 235,
     note: "Álbum marcado por arranjos elaborados e letras introspectivas sobre relações e sentimentos.",
+    track: "Sentimental",
   },
   {
     id: 8,
@@ -78,6 +85,7 @@ export const albums = [
     color: "#a0503a",
     height: 230,
     note: "Estreia solo que ajudou a consolidar o soul brasileiro, com a voz marcante de Tim Maia.",
+    track: "Azul da Cor do Mar",
   },
   {
     id: 9,
@@ -88,6 +96,7 @@ export const albums = [
     color: "#3d3b36",
     height: 232,
     note: "Obra conceitual que aborda tempo, dinheiro, conflitos e aspectos da experiência humana.",
+    track: "Time",
   },
   {
     id: 10,
@@ -98,6 +107,7 @@ export const albums = [
     color: "#b07a5a",
     height: 227,
     note: "Mistura rock alternativo, hip-hop e música eletrônica em uma atmosfera sombria e experimental.",
+    track: "Feel Good Inc.",
   },
   {
     id: 11,
@@ -108,6 +118,7 @@ export const albums = [
     color: "#9c6b6b",
     height: 236,
     note: "Combina metal pesado, mudanças rítmicas e críticas sociais em faixas intensas e marcantes.",
+    track: "Chop Suey!",
   },
   {
     id: 12,
@@ -118,6 +129,7 @@ export const albums = [
     color: "#c98b3a",
     height: 230,
     note: "Álbum emblemático da Tropicália e da MPB, com interpretações intensas e arranjos ousados.",
+    track: "Índia",
   },
   {
     id: 13,
@@ -128,6 +140,7 @@ export const albums = [
     color: "#6e8a8a",
     height: 229,
     note: "Estreia que aproxima MPB, soul, dub e música eletrônica com sonoridade delicada.",
+    track: "Lenda",
   },
   {
     id: 14,
@@ -138,26 +151,29 @@ export const albums = [
     color: "#4f6b55",
     height: 234,
     note: "Disco experimental que mistura ritmos brasileiros, eletrônica e atmosferas psicodélicas.",
+    track: "Crua",
   },
   {
     id: 15,
-    title: "Clube da Esquina",
-    artist: "Milton Nascimento & Lô Borges",
-    year: 1972,
-    genre: "MPB",
+    title: "Nó na Orelha",
+    artist: "Criolo",
+    year: 2011,
+    genre: "Hip-hop",
     color: "#526b83",
     height: 236,
-    note: "Obra fundamental da música brasileira, com harmonias sofisticadas e influências do rock e da música mineira.",
+    note: "Disco aclamado que transita entre rap, samba, soul e afrobeat com fortes crônicas urbanas.",
+    track: "Não Existe Amor em SP",
   },
   {
     id: 16,
-    title: "Sobrevivendo no Inferno",
-    artist: "Racionais MC's",
-    year: 1997,
-    genre: "Hip-hop",
+    title: "Nação Zumbi",
+    artist: "Nação Zumbi",
+    year: 2002,
+    genre: "Manguebeat",
     color: "#6b5545",
     height: 233,
-    note: "Marco do rap nacional, retrata desigualdade, violência e resistência nas periferias brasileiras.",
+    note: "Primeiro disco de estúdio homônimo pós-Chico Science, reafirmando o peso dos tambores e guitarras.",
+    track: "Blunt of Judah",
   },
   {
     id: 17,
@@ -168,15 +184,17 @@ export const albums = [
     color: "#8a7650",
     height: 231,
     note: "Une samba, funk e referências esotéricas em um dos trabalhos mais celebrados de Jorge Ben.",
+    track: "Os Alquimistas Estão Chegando",
   },
   {
     id: 18,
-    title: "Dummy",
-    artist: "Portishead",
-    year: 1994,
-    genre: "Trip-hop",
+    title: "Nada de Novo",
+    artist: "Mombojó",
+    year: 2004,
+    genre: "Indie Rock",
     color: "#59616b",
     height: 228,
-    note: "Clássico do trip-hop, marcado por vocais melancólicos, batidas lentas e texturas cinematográficas.",
+    note: "Disco de estreia fundamental do novo pop/rock pernambucano dos anos 2000, unindo melodias solares a arranjos criativos.",
+    track: "Deixe-se Acreditar",
   },
 ];
