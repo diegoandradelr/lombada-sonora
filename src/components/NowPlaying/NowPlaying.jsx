@@ -1,7 +1,17 @@
+import { useEffect, useState } from "react";
+import { getPreviewUrl } from "../../services/itunes";
 import { AlbumDetails } from "../AlbumDetails/AlbumDetails";
 import { Turntable } from "../Turntable/Turntable";
 
 export const NowPlaying = ({ album, onReturn }) => {
+  const [previewUrl, setPreviewUrl] = useState(null);
+
+  useEffect(() => {
+    if (!album) return;
+
+    getPreviewUrl(album.artist, album.track).then(setPreviewUrl);
+  }, [album]);
+
   return (
     <aside className="sticky top-4 self-start h-[calc(100vh-2rem)] p-8 flex flex-col gap-6">
       <div
@@ -14,6 +24,7 @@ export const NowPlaying = ({ album, onReturn }) => {
       <div className="flex flex-col gap-6 mt-6">
         <Turntable album={album} />
         <AlbumDetails album={album} />
+        <p className="text-xs break-all">{previewUrl}</p>
         {album && (
           <button
             type="button"
