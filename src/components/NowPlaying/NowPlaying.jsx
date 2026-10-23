@@ -4,13 +4,25 @@ import { AlbumDetails } from "../AlbumDetails/AlbumDetails";
 import { Turntable } from "../Turntable/Turntable";
 
 export const NowPlaying = ({ album, onReturn }) => {
-  const [previewUrl, setPreviewUrl] = useState(null);
+  const [preview, setPreview] = useState({ albumId: null, url: null });
 
   useEffect(() => {
     if (!album) return;
 
-    getPreviewUrl(album.artist, album.track).then(setPreviewUrl);
+    let ignore = false;
+
+    getPreviewUrl(album.artist, album.track).then((url) => {
+      if (!ignore) {
+        setPreview({ albumId: album.id, url });
+      }
+    });
+
+    return () => {
+      ignore = true;
+    };
   }, [album]);
+
+  const previewUrl = preview.albumId === album?.id ? preview.url : null;
 
   return (
     <aside className="sticky top-4 self-start h-[calc(100vh-2rem)] p-8 flex flex-col gap-6">
@@ -24,7 +36,7 @@ export const NowPlaying = ({ album, onReturn }) => {
       <div className="flex flex-col gap-6 mt-6">
         <Turntable album={album} />
         <AlbumDetails album={album} />
-        <p className="text-xs break-all">{previewUrl}</p>
+        {album && <p className="text-xs break-all">{previewUrl}</p>}
         {album && (
           <button
             type="button"
