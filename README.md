@@ -11,7 +11,7 @@ A personal record collection built with React and Tailwind CSS. Instead of the u
 - [x] Animated turntable: the record drops in, the tonearm moves and the vinyl spins at 33⅓ rpm
 - [x] Album details with a personal note
 - [x] Keyboard and screen reader friendly
-- [ ] Audio preview of a track
+- [x] Audio preview of a track
 - [ ] Filter by genre
 - [ ] Search and add new records
 - [ ] Save the collection in the browser
