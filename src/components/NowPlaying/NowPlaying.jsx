@@ -1,10 +1,11 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { getPreviewUrl } from "../../services/itunes";
 import { AlbumDetails } from "../AlbumDetails/AlbumDetails";
 import { Turntable } from "../Turntable/Turntable";
 
 export const NowPlaying = ({ album, onReturn }) => {
   const [preview, setPreview] = useState({ albumId: null, url: null });
+  const [playingUrl, setPlayingUrl] = useState(null);
 
   useEffect(() => {
     if (!album) return;
@@ -23,6 +24,20 @@ export const NowPlaying = ({ album, onReturn }) => {
   }, [album]);
 
   const previewUrl = preview.albumId === album?.id ? preview.url : null;
+  const isPlaying = previewUrl !== null && playingUrl === previewUrl;
+
+  const audioRef = useRef(null);
+
+  function togglePlay() {
+    const audio = audioRef.current;
+    if (!audio) return;
+
+    if (audio.paused) {
+      audio.play();
+    } else {
+      audio.pause();
+    }
+  }
 
   return (
     <aside className="sticky top-4 self-start h-[calc(100vh-2rem)] p-8 flex flex-col gap-6">
@@ -34,9 +49,32 @@ export const NowPlaying = ({ album, onReturn }) => {
         Tocando agora
       </span>
       <div className="flex flex-col gap-6 mt-6">
-        <Turntable album={album} />
+        <Turntable
+          album={album}
+          isPlaying={isPlaying}
+          canPlay={previewUrl !== null}
+          onTogglePlay={togglePlay}
+        />
         <AlbumDetails album={album} />
-        {album && <p className="text-xs break-all">{previewUrl}</p>}
+        {previewUrl && (
+          <audio
+            ref={audioRef}
+            src={previewUrl}
+            autoPlay
+            onPlay={() => setPlayingUrl(previewUrl)}
+            onPause={() => setPlayingUrl(null)}
+            onEnded={() => setPlayingUrl(null)}
+          />
+        )}
+        {/* {previewUrl && (
+          <button
+            type="button"
+            onClick={togglePlay}
+            className="self-start font-mono text-xs uppercase tracking-widest underline cursor-pointer hover:text-ember"
+          >
+            {isPlaying ? "Parar" : "Tocar"}
+          </button>
+        )} */}
         {album && (
           <button
             type="button"
