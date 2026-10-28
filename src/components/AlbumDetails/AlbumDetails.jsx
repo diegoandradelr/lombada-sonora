@@ -3,7 +3,11 @@ export const AlbumDetails = ({ album }) => {
     <div aria-live="polite" className="flex flex-col gap-1">
       {album ? (
         <>
-          <h2 className="font-display font-bold text-3xl leading-tight text-balance">
+          <h2
+            className={`font-display font-bold leading-tight text-balance ${
+              album.title.length > 24 ? "text-2xl" : "text-3xl"
+            }`}
+          >
             {album.title}
           </h2>
           <p className="text-muted">{album.artist}</p>
