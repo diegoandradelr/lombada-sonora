@@ -6,17 +6,24 @@ import { Turntable } from "../Turntable/Turntable";
 export const NowPlaying = ({ album, onReturn }) => {
   const [preview, setPreview] = useState({ albumId: null, url: null });
   const [playingUrl, setPlayingUrl] = useState(null);
+  const audioRef = useRef(null);
 
   useEffect(() => {
     if (!album) return;
 
     let ignore = false;
 
-    getPreviewUrl(album.artist, album.track).then((url) => {
-      if (!ignore) {
-        setPreview({ albumId: album.id, url });
-      }
-    });
+    getPreviewUrl(album.artist, album.track)
+      .then((url) => {
+        if (!ignore) {
+          setPreview({ albumId: album.id, url });
+        }
+      })
+      .catch(() => {
+        if (!ignore) {
+          setPreview({ albumId: album.id, url: null });
+        }
+      });
 
     return () => {
       ignore = true;
@@ -24,9 +31,9 @@ export const NowPlaying = ({ album, onReturn }) => {
   }, [album]);
 
   const previewUrl = preview.albumId === album?.id ? preview.url : null;
+  const isLoading = Boolean(album) && preview.albumId !== album.id;
+  const isUnavailable = Boolean(album) && !isLoading && previewUrl === null;
   const isPlaying = previewUrl !== null && playingUrl === previewUrl;
-
-  const audioRef = useRef(null);
 
   function togglePlay() {
     const audio = audioRef.current;
@@ -56,6 +63,13 @@ export const NowPlaying = ({ album, onReturn }) => {
           onTogglePlay={togglePlay}
         />
         <AlbumDetails album={album} />
+        <p role="status" className="font-mono text-xs text-muted">
+          {isLoading && "Buscando a faixa…"}
+          {isUnavailable && "Prévia indisponível para este disco"}
+          {previewUrl && (
+            <span className="text-sm text-ink">♪ {album.track}</span>
+          )}
+        </p>
         {previewUrl && (
           <audio
             ref={audioRef}
@@ -66,15 +80,6 @@ export const NowPlaying = ({ album, onReturn }) => {
             onEnded={() => setPlayingUrl(null)}
           />
         )}
-        {/* {previewUrl && (
-          <button
-            type="button"
-            onClick={togglePlay}
-            className="self-start font-mono text-xs uppercase tracking-widest underline cursor-pointer hover:text-ember"
-          >
-            {isPlaying ? "Parar" : "Tocar"}
-          </button>
-        )} */}
         {album && (
           <button
             type="button"
