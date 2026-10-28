@@ -1,6 +1,6 @@
 import { Spine } from "../Spine/Spine";
 
-export const Shelf = ({ albums, onSelect, selectedId }) => {
+export const Shelf = ({ albums, onSelect, selectedId, registerSpine }) => {
   return (
     <div className="w-full ">
       <div className="flex items-end gap-1 px-4 ">
@@ -10,6 +10,7 @@ export const Shelf = ({ albums, onSelect, selectedId }) => {
             album={album}
             onClick={() => onSelect(album.id)}
             isSelected={album.id === selectedId}
+            ref={(element) => registerSpine(album.id, element)}
           />
         ))}
       </div>

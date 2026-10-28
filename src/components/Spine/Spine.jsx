@@ -1,4 +1,4 @@
-export const Spine = ({ album, onClick, isSelected }) => {
+export const Spine = ({ album, onClick, isSelected, ref }) => {
   const { title, artist, color, height } = album;
   return (
     <button
@@ -8,6 +8,7 @@ export const Spine = ({ album, onClick, isSelected }) => {
           ? "-translate-y-2 outline-2 outline-ember outline-offset-2"
           : ""
       }`}
+      ref={ref}
       onClick={onClick}
       aria-pressed={isSelected}
     >

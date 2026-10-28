@@ -1,7 +1,7 @@
 import { Shelf } from "../Shelf/Shelf";
 import { chunk } from "../../utils/chunk";
 
-export const Collection = ({ albums, onSelect, selectedId }) => {
+export const Collection = ({ albums, onSelect, selectedId, registerSpine }) => {
   const shelves = chunk(albums, 6);
 
   return (
@@ -14,6 +14,7 @@ export const Collection = ({ albums, onSelect, selectedId }) => {
             albums={shelf}
             onSelect={onSelect}
             selectedId={selectedId}
+            registerSpine={registerSpine}
           />
         ))}
       </div>
