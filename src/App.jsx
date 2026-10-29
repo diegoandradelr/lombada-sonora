@@ -6,6 +6,7 @@ import { Collection } from "./components/Collection/Collection";
 function App() {
   const [selectedId, setSelectedId] = useState(null);
   const spineRefs = useRef(new Map());
+  const activeFilterRef = useRef(null);
 
   const selectedAlbum = albums.find((album) => album.id === selectedId);
 
@@ -16,7 +17,14 @@ function App() {
   function handleReturn() {
     const returnedId = selectedId;
     setSelectedId(null);
-    spineRefs.current.get(returnedId)?.focus();
+
+    const spine = spineRefs.current.get(returnedId);
+
+    if (spine) {
+      spine.focus();
+    } else {
+      activeFilterRef.current?.focus();
+    }
   }
 
   function registerSpine(id, element) {
@@ -35,6 +43,7 @@ function App() {
         onSelect={handleSelect}
         selectedId={selectedId}
         registerSpine={registerSpine}
+        activeFilterRef={activeFilterRef}
       />
     </div>
   );
