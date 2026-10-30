@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { Shelf } from "../Shelf/Shelf";
 import { chunk } from "../../utils/chunk";
+import { AlbumSearch } from "../AlbumSearch/AlbumSearch";
 import { getGenres } from "../../utils/getGenres";
 import { GenreFilter } from "../GenreFilter/GenreFilter";
 
@@ -22,6 +23,7 @@ export const Collection = ({
   return (
     <main className="p-6">
       <h1 className="font-display text-4xl font-bold mb-8">Minha estante</h1>
+      <AlbumSearch />
       <GenreFilter
         genres={genres}
         selectedGenre={selectedGenre}
