@@ -1,14 +1,34 @@
 import { useRef, useState } from "react";
-import { albums } from "./data/albums";
+import { albums as initialAlbums } from "./data/albums";
+import { SPINE_COLORS } from "./data/spineColors";
+import { pickRandom, randomBetween } from "./utils/random";
 import { NowPlaying } from "./components/NowPlaying/NowPlaying";
 import { Collection } from "./components/Collection/Collection";
 
 function App() {
+  const [albums, setAlbums] = useState(initialAlbums);
   const [selectedId, setSelectedId] = useState(null);
   const spineRefs = useRef(new Map());
   const activeFilterRef = useRef(null);
 
   const selectedAlbum = albums.find((album) => album.id === selectedId);
+
+  function handleAdd(result) {
+    const newAlbum = {
+      id: result.id,
+      title: result.title,
+      artist: result.artist,
+      year: result.year,
+      genre: result.genre,
+      cover: result.cover,
+      color: pickRandom(SPINE_COLORS),
+      height: randomBetween(226, 240),
+      note: "",
+      track: null,
+    };
+
+    setAlbums((current) => [...current, newAlbum]);
+  }
 
   function handleSelect(id) {
     setSelectedId((currentId) => (currentId === id ? null : id));
@@ -44,6 +64,7 @@ function App() {
         selectedId={selectedId}
         registerSpine={registerSpine}
         activeFilterRef={activeFilterRef}
+        onAdd={handleAdd}
       />
     </div>
   );

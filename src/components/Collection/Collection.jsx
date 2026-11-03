@@ -11,6 +11,7 @@ export const Collection = ({
   selectedId,
   registerSpine,
   activeFilterRef,
+  onAdd,
 }) => {
   const [selectedGenre, setSelectedGenre] = useState(null);
 
@@ -23,7 +24,7 @@ export const Collection = ({
   return (
     <main className="p-6">
       <h1 className="font-display text-4xl font-bold mb-8">Minha estante</h1>
-      <AlbumSearch />
+      <AlbumSearch onAdd={onAdd} albums={albums} />
       <GenreFilter
         genres={genres}
         selectedGenre={selectedGenre}

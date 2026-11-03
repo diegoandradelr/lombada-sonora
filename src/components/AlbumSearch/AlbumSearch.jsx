@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { searchAlbums } from "../../services/itunes";
 
-export const AlbumSearch = () => {
+export const AlbumSearch = ({ albums, onAdd }) => {
   const [query, setQuery] = useState("");
   const [search, setSearch] = useState({
     term: "",
@@ -86,6 +86,19 @@ export const AlbumSearch = () => {
                   {album.year} · {album.genre}
                 </p>
               </div>
+              {albums.some((owned) => owned.id === album.id) ? (
+                <span className="ml-auto shrink-0 font-mono text-xs text-muted">
+                  Na estante
+                </span>
+              ) : (
+                <button
+                  type="button"
+                  onClick={() => onAdd(album)}
+                  className="ml-auto shrink-0 font-mono text-xs uppercase tracking-widest underline cursor-pointer hover:text-ink text-muted"
+                >
+                  Adicionar
+                </button>
+              )}
             </li>
           ))}
         </ul>

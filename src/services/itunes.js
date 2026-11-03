@@ -1,6 +1,7 @@
 const BASE_URL = "https://itunes.apple.com/search";
 
 export async function getPreviewUrl(artist, track) {
+  if (!track) return null;
   const params = new URLSearchParams({
     term: `${artist} ${track}`,
     entity: "song",
