@@ -1,10 +1,14 @@
 import { useEffect, useRef, useState } from "react";
-import { getPreviewUrl } from "../../services/itunes";
+import { getPreview } from "../../services/itunes";
 import { AlbumDetails } from "../AlbumDetails/AlbumDetails";
 import { Turntable } from "../Turntable/Turntable";
 
 export const NowPlaying = ({ album, onReturn }) => {
-  const [preview, setPreview] = useState({ albumId: null, url: null });
+  const [preview, setPreview] = useState({
+    albumId: null,
+    url: null,
+    track: null,
+  });
   const [playingUrl, setPlayingUrl] = useState(null);
   const audioRef = useRef(null);
 
@@ -13,15 +17,19 @@ export const NowPlaying = ({ album, onReturn }) => {
 
     let ignore = false;
 
-    getPreviewUrl(album.artist, album.track)
-      .then((url) => {
+    getPreview(album)
+      .then((result) => {
         if (!ignore) {
-          setPreview({ albumId: album.id, url });
+          setPreview({
+            albumId: album.id,
+            url: result?.url ?? null,
+            track: result?.track ?? null,
+          });
         }
       })
       .catch(() => {
         if (!ignore) {
-          setPreview({ albumId: album.id, url: null });
+          setPreview({ albumId: album.id, url: null, track: null });
         }
       });
 
@@ -31,6 +39,7 @@ export const NowPlaying = ({ album, onReturn }) => {
   }, [album]);
 
   const previewUrl = preview.albumId === album?.id ? preview.url : null;
+  const trackName = preview.albumId === album?.id ? preview.track : null;
   const isLoading = Boolean(album) && preview.albumId !== album.id;
   const isUnavailable = Boolean(album) && !isLoading && previewUrl === null;
   const isPlaying = previewUrl !== null && playingUrl === previewUrl;
@@ -50,7 +59,7 @@ export const NowPlaying = ({ album, onReturn }) => {
     <aside className="sticky top-4 self-start h-[calc(100vh-2rem)] p-8 flex flex-col gap-6">
       <div
         aria-hidden="true"
-        className="absolute right-0 top-8 bottom-8 w-px bg-line "
+        className="absolute right-0 top-8 bottom-8 w-px bg-line"
       />
       <div className="flex items-center justify-between">
         <span className="font-mono text-sm text-ember uppercase tracking-widest">
@@ -79,7 +88,7 @@ export const NowPlaying = ({ album, onReturn }) => {
           </button>
         )}
       </div>
-      <div className=" flex flex-col gap-6 ">
+      <div className="flex flex-col gap-6 ">
         <div className="w-full max-w-[38vh]">
           <Turntable
             album={album}
@@ -93,7 +102,7 @@ export const NowPlaying = ({ album, onReturn }) => {
           {isLoading && "Buscando a faixa…"}
           {isUnavailable && "Prévia indisponível para este disco"}
           {previewUrl && (
-            <span className="text-sm text-ink">♪ {album.track}</span>
+            <span className="text-sm text-ink">♪ {trackName}</span>
           )}
         </p>
         {previewUrl && (

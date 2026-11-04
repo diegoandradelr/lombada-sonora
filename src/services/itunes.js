@@ -1,7 +1,7 @@
 const BASE_URL = "https://itunes.apple.com/search";
+const LOOKUP_URL = "https://itunes.apple.com/lookup";
 
-export async function getPreviewUrl(artist, track) {
-  if (!track) return null;
+async function findPreviewByTrack(artist, track) {
   const params = new URLSearchParams({
     term: `${artist} ${track}`,
     entity: "song",
@@ -18,7 +18,36 @@ export async function getPreviewUrl(artist, track) {
   const data = await response.json();
   const match = data.results.find((result) => result.previewUrl);
 
-  return match?.previewUrl ?? null;
+  return match ? { url: match.previewUrl, track: match.trackName } : null;
+}
+
+async function findPreviewByAlbumId(albumId) {
+  const params = new URLSearchParams({
+    id: albumId,
+    entity: "song",
+    country: "BR",
+  });
+
+  const response = await fetch(`${LOOKUP_URL}?${params}`);
+
+  if (!response.ok) {
+    throw new Error(`A API do iTunes respondeu com status ${response.status}`);
+  }
+
+  const data = await response.json();
+  const match = data.results.find(
+    (result) => result.wrapperType === "track" && result.previewUrl,
+  );
+
+  return match ? { url: match.previewUrl, track: match.trackName } : null;
+}
+
+export async function getPreview(album) {
+  if (album.track) {
+    return findPreviewByTrack(album.artist, album.track);
+  }
+
+  return findPreviewByAlbumId(album.id);
 }
 
 export async function searchAlbums(term) {

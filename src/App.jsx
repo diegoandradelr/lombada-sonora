@@ -27,7 +27,11 @@ function App() {
       track: null,
     };
 
-    setAlbums((current) => [...current, newAlbum]);
+    setAlbums((current) =>
+      current.some((album) => album.id === newAlbum.id)
+        ? current
+        : [...current, newAlbum],
+    );
   }
 
   function handleSelect(id) {
