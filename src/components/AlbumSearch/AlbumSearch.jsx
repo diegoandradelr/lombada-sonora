@@ -1,9 +1,10 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { searchAlbums } from "../../services/itunes";
 import { isSameAlbum } from "../../utils/isSameAlbum";
 
 export const AlbumSearch = ({ albums, onAdd }) => {
   const [query, setQuery] = useState("");
+  const searchInputRef = useRef(null);
   const [search, setSearch] = useState({
     term: "",
     results: [],
@@ -43,12 +44,18 @@ export const AlbumSearch = ({ albums, onAdd }) => {
   const isDone = isActive && !isLoading;
   const results = isDone ? search.results : [];
 
+  function clearSearch() {
+    setQuery("");
+    searchInputRef.current?.focus();
+  }
+
   return (
     <div className="mb-8 max-w-md">
       <label htmlFor="album-search" className="sr-only">
         Buscar discos para adicionar à coleção
       </label>
       <input
+        ref={searchInputRef}
         id="album-search"
         type="search"
         value={query}
@@ -56,20 +63,36 @@ export const AlbumSearch = ({ albums, onAdd }) => {
         placeholder="Buscar disco ou artista…"
         autoComplete="off"
         className="w-full bg-transparent border-b border-line py-2 font-mono text-sm placeholder:text-muted outline-none focus:border-ink"
+        onKeyDown={(event) => {
+          if (event.key === "Escape") {
+            clearSearch();
+          }
+        }}
       />
 
-      <p role="status" className="mt-2 font-mono text-xs text-muted">
-        {isLoading && "Buscando…"}
-        {isDone &&
-          search.failed &&
-          "Não foi possível buscar agora. Tente de novo."}
-        {isDone &&
-          !search.failed &&
-          results.length === 0 &&
-          `Nenhum disco encontrado para “${term}”.`}
-        {results.length > 0 &&
-          `${results.length} ${results.length === 1 ? "disco encontrado" : "discos encontrados"}`}
-      </p>
+      <div className="mt-2 flex items-center justify-between gap-4">
+        <p role="status" className="font-mono text-xs text-muted">
+          {isLoading && "Buscando…"}
+          {isDone &&
+            search.failed &&
+            "Não foi possível buscar agora. Tente de novo."}
+          {isDone &&
+            !search.failed &&
+            results.length === 0 &&
+            `Nenhum disco encontrado para “${term}”.`}
+          {results.length > 0 &&
+            `${results.length} ${results.length === 1 ? "disco encontrado" : "discos encontrados"}`}
+        </p>
+        {query && (
+          <button
+            type="button"
+            onClick={clearSearch}
+            className="shrink-0 font-mono text-xs uppercase tracking-widest text-muted cursor-pointer transition-colors hover:text-ink focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-ink"
+          >
+            Limpar
+          </button>
+        )}
+      </div>
 
       {results.length > 0 && (
         <ul className="mt-3 flex flex-col divide-y divide-line">
