@@ -218,6 +218,8 @@ Modelo para as próximas entradas:
 
 - Função `searchAlbums` e componente `AlbumSearch`, com campo de busca e lista de resultados.
 - Botão "Adicionar" em cada resultado: o disco ganha uma lombada na estante, com cor e altura sorteadas. Discos que já estão na estante mostram "Na estante".
+- Os discos adicionados tocam a prévia de uma faixa do próprio álbum.
+- Os meus discos originais também são reconhecidos como "Na estante" na busca.
 
 **Decisões**
 
@@ -228,14 +230,21 @@ Modelo para as próximas entradas:
 - A coleção virou estado no `App`; o `albums.js` passou a ser só o valor inicial.
 - "Na estante" é calculado com `.some()` a partir da coleção, então muda sozinho quando um disco é adicionado.
 - Os gêneros novos aparecem nos filtros automaticamente, porque a lista de gêneros é calculada a partir da coleção.
+- **A prévia é buscada na hora de tocar, e não ao adicionar.** Uma única função, `getPreview`, decide o caminho: discos com faixa buscam por artista + faixa; discos sem faixa consultam o álbum pelo id (lookup). As duas devolvem o mesmo formato, `{ url, track }`.
+- **Dois discos são o mesmo** se tiverem o mesmo id, ou o mesmo título e artista depois de normalizados (minúsculas, sem acentos, sem espaços extras e sem o que está entre parênteses). A mesma função (`isSameAlbum`) é usada no "Na estante" e na proteção contra duplicados.
+- Depois de "Adicionar", a lista de resultados continua aberta: é ali que aparece o "Na estante", e dá para adicionar vários discos da mesma busca.
 
 **Problemas e soluções**
 
 - **Uma busca saía a cada palavra digitada** → o efeito dependia do texto já sem espaços (`trim`), então o espaço não reiniciava o tempo do debounce → o efeito passou a depender do texto exato do campo, com o `trim` feito dentro dele.
 - **Os dois arquivos da `src/utils` foram apagados sem querer** → o `git status` mostrou `deleted:` → recuperei com `git restore src/utils`. Nunca usar `git restore .` com mudanças que ainda não estão num commit, porque ele desfaz tudo.
 - **Erro `albums.some is not a function`** → o `albums` chegava ao componente, mas não era uma lista. Diferente de `Cannot read properties of undefined`, que significa que a prop não chegou.
-- **Os discos novos tocavam música de outro artista** → eles têm `track: null`, e numa template string o `null` vira o texto `"null"`; a busca ia como "Alabama Shakes null" → por enquanto, a `getPreviewUrl` devolve `null` quando não há faixa. A solução completa é a etapa 3b.
+- **Os discos novos tocavam música de outro artista** → eles têm `track: null`, e numa template string o `null` vira o texto `"null"`; a busca ia como "Alabama Shakes null" → para os discos sem faixa, a prévia passou a ser buscada pelo id do álbum (lookup do iTunes), que traz as faixas exatas daquele disco.
+- **Disco adicionado offline ficava sem música para sempre** → a faixa era buscada só no momento de adicionar; se a busca falhasse, o `null` ficava gravado e ninguém tentava de novo → a prévia passou a ser buscada na hora de tocar. Assim uma falha momentânea nunca vira permanente, e o "Adicionar" ficou instantâneo.
+- **Os meus discos originais não apareciam como "Na estante"** → eles têm ids de 1 a 18, inventados por mim, e a busca traz os ids do iTunes → a comparação passou a considerar também título e artista.
+- **Transa não era reconhecido como "Na estante"** → no catálogo, o título vinha como "Transa (2012 Remaster)" e "Transa (Remasterizado)" → a normalização passou a ignorar o que está entre parênteses e colchetes. O Nevermind não é reconhecido porque não está na loja brasileira do iTunes.
 - **Gêneros duplicados em idiomas diferentes** ("Alternativo" e "Alternative") → a loja BR do iTunes dá os gêneros em português, e alguns dos meus estavam em inglês → pendente.
+- **ESLint avisou `no-useless-assignment`** → o `track` começava como `null` e era sobrescrito tanto no `try` quanto no `catch`, então o valor inicial nunca era usado → o aviso deixou de existir quando o `handleAdd` voltou a ser simples.
 
 **Aprendi**
 
@@ -247,6 +256,12 @@ Modelo para as próximas entradas:
 - `.some()`: "algum item da lista passa nesta condição?".
 - `import { x as y }` para renomear um import.
 - `ml-auto` dentro de um `flex` empurra o elemento para o fim da linha.
+- `try`/`catch` com `async/await`, e `.catch(() => null)` direto numa promessa.
+- Funções sem `export` ficam "internas" ao arquivo.
+- Buscar um dado no momento em que ele é necessário, e não antes.
+- Normalizar textos para comparar: `toLowerCase`, `normalize("NFD")` e expressões regulares.
+- Funções criadas com `function` podem ser usadas antes da linha onde estão (_hoisting_); variáveis com `const`, não.
+- Limpar o console e reproduzir o problema, para ver só os erros atuais.
 
 **Dúvidas**
 
@@ -256,7 +271,7 @@ Modelo para as próximas entradas:
 
 ## Pendências
 
-- **Etapa 3b:** escolher a faixa dos discos adicionados com o lookup do iTunes (pelo id do álbum).
+- **Parte 2 da busca:** fechar os resultados com a tecla Esc e com um botão "Limpar".
 - **Gêneros:** padronizar os nomes em português, como a loja BR do iTunes.
 - **Filtros de gênero:** mostrar só os 6 a 8 gêneros com mais discos e um botão "+N gêneros" para expandir. O gênero ativo aparece sempre, mesmo se não estiver entre os mais frequentes. Fazer junto com a padronização dos gêneros.
 - **Parte 4:** atalho de teclado para focar a busca.
