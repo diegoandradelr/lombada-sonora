@@ -274,6 +274,7 @@ Modelo para as próximas entradas:
 
 ## Pendências
 
+- **Foco no "Adicionar":** ao adicionar um disco pelo teclado, o botão é trocado pelo texto "Na estante" e o foco se perde. Decidir para onde o foco deve ir (o próprio "Na estante", o próximo "Adicionar" da lista ou o campo de busca) e resolver com `useRef` e `.focus()`.
 - **Gêneros:** padronizar os nomes em português, como a loja BR do iTunes.
 - **Filtros de gênero:** mostrar só os 6 a 8 gêneros com mais discos e um botão "+N gêneros" para expandir. O gênero ativo aparece sempre, mesmo se não estiver entre os mais frequentes. Fazer junto com a padronização dos gêneros.
 - **Parte 4:** atalho de teclado para focar a busca.
