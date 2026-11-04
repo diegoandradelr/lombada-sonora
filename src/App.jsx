@@ -2,6 +2,7 @@ import { useRef, useState } from "react";
 import { albums as initialAlbums } from "./data/albums";
 import { SPINE_COLORS } from "./data/spineColors";
 import { pickRandom, randomBetween } from "./utils/random";
+import { isSameAlbum } from "./utils/isSameAlbum";
 import { NowPlaying } from "./components/NowPlaying/NowPlaying";
 import { Collection } from "./components/Collection/Collection";
 
@@ -28,7 +29,7 @@ function App() {
     };
 
     setAlbums((current) =>
-      current.some((album) => album.id === newAlbum.id)
+      current.some((album) => isSameAlbum(album, newAlbum))
         ? current
         : [...current, newAlbum],
     );

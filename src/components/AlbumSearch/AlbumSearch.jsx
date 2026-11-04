@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { searchAlbums } from "../../services/itunes";
+import { isSameAlbum } from "../../utils/isSameAlbum";
 
 export const AlbumSearch = ({ albums, onAdd }) => {
   const [query, setQuery] = useState("");
@@ -86,7 +87,7 @@ export const AlbumSearch = ({ albums, onAdd }) => {
                   {album.year} · {album.genre}
                 </p>
               </div>
-              {albums.some((owned) => owned.id === album.id) ? (
+              {albums.some((owned) => isSameAlbum(owned, album)) ? (
                 <span className="ml-auto shrink-0 font-mono text-xs text-muted">
                   Na estante
                 </span>
