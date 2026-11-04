@@ -220,6 +220,7 @@ Modelo para as próximas entradas:
 - Botão "Adicionar" em cada resultado: o disco ganha uma lombada na estante, com cor e altura sorteadas. Discos que já estão na estante mostram "Na estante".
 - Os discos adicionados tocam a prévia de uma faixa do próprio álbum.
 - Os meus discos originais também são reconhecidos como "Na estante" na busca.
+- A busca fecha com a tecla Esc ou com o botão "Limpar", e o foco volta para o campo.
 
 **Decisões**
 
@@ -262,6 +263,8 @@ Modelo para as próximas entradas:
 - Normalizar textos para comparar: `toLowerCase`, `normalize("NFD")` e expressões regulares.
 - Funções criadas com `function` podem ser usadas antes da linha onde estão (_hoisting_); variáveis com `const`, não.
 - Limpar o console e reproduzir o problema, para ver só os erros atuais.
+- `onKeyDown` e `event.key` para reagir a uma tecla específica.
+- Usei `useRef` e `.focus()` sozinho pela primeira vez, para devolver o foco ao campo de busca depois de limpar.
 
 **Dúvidas**
 
@@ -271,7 +274,6 @@ Modelo para as próximas entradas:
 
 ## Pendências
 
-- **Parte 2 da busca:** fechar os resultados com a tecla Esc e com um botão "Limpar".
 - **Gêneros:** padronizar os nomes em português, como a loja BR do iTunes.
 - **Filtros de gênero:** mostrar só os 6 a 8 gêneros com mais discos e um botão "+N gêneros" para expandir. O gênero ativo aparece sempre, mesmo se não estiver entre os mais frequentes. Fazer junto com a padronização dos gêneros.
 - **Parte 4:** atalho de teclado para focar a busca.
