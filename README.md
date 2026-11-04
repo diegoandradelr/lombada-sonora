@@ -15,7 +15,9 @@ A personal record collection built with React and Tailwind CSS. Instead of the u
 - [x] Loading and unavailable states while fetching the preview
 - [x] Keyboard focus returns to the record's spine after putting it back
 - [x] Filter by genre
-- [ ] Search and add new records
+- [x] Search and add new records
+- [x] Records already on the shelf are recognized in the search, even in remastered editions
+- [x] Added records play a preview from one of their own tracks
 - [ ] Save the collection in the browser
 - [ ] Mobile layout
 
