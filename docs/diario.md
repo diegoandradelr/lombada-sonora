@@ -222,6 +222,7 @@ Modelo para as próximas entradas:
 - Os meus discos originais também são reconhecidos como "Na estante" na busca.
 - A busca fecha com a tecla Esc ou com o botão "Limpar", e o foco volta para o campo.
 - Ao adicionar um disco pelo teclado, o foco fica no "Na estante" daquele resultado.
+- Modo de remover discos: o botão "Remover discos" faz as lombadas balançarem e ganharem um "×"; nesse modo, clicar numa lombada não toca a música.
 
 **Decisões**
 
@@ -235,6 +236,7 @@ Modelo para as próximas entradas:
 - **A prévia é buscada na hora de tocar, e não ao adicionar.** Uma única função, `getPreview`, decide o caminho: discos com faixa buscam por artista + faixa; discos sem faixa consultam o álbum pelo id (lookup). As duas devolvem o mesmo formato, `{ url, track }`.
 - **Dois discos são o mesmo** se tiverem o mesmo id, ou o mesmo título e artista depois de normalizados (minúsculas, sem acentos, sem espaços extras e sem o que está entre parênteses). A mesma função (`isSameAlbum`) é usada no "Na estante" e na proteção contra duplicados.
 - Depois de "Adicionar", a lista de resultados continua aberta: é ali que aparece o "Na estante", e dá para adicionar vários discos da mesma busca.
+- O botão se chama "Remover discos", e não "Organizar": o rótulo deve dizer exatamente o que o modo faz. Se um dia o modo ganhar outras ações, o nome muda.
 
 **Problemas e soluções**
 
@@ -248,6 +250,7 @@ Modelo para as próximas entradas:
 - **Gêneros duplicados em idiomas diferentes** ("Alternativo" e "Alternative") → a loja BR do iTunes dá os gêneros em português, e alguns dos meus estavam em inglês → pendente.
 - **ESLint avisou `no-useless-assignment`** → o `track` começava como `null` e era sobrescrito tanto no `try` quanto no `catch`, então o valor inicial nunca era usado → o aviso deixou de existir quando o `handleAdd` voltou a ser simples.
 - **O foco se perdia ao adicionar um disco pelo teclado** → o botão "Adicionar" é trocado pelo texto "Na estante", e no momento do clique o "Na estante" ainda não existe → guardo o id do disco adicionado num estado (`justAddedId`) e um `useEffect`, que roda depois da tela atualizar, dá o foco no "Na estante" daquele disco, achado num caderno de refs.
+- **Depois de renomear com F2, o modo parou de aparecer nas lombadas** → o VS Code renomeou a variável no `Spine` mas manteve o nome antigo da prop (`isOrganizing: isRemoving`), enquanto o `Shelf` já enviava `isRemoving` → deixei o mesmo nome dos dois lados. A sintaxe `{ nomeQueChega: nomeQueUso }` renomeia durante a desestruturação.
 
 **Aprendi**
 
@@ -279,7 +282,7 @@ Modelo para as próximas entradas:
 
 ## Pendências
 
-- **Remover disco (modo Organizar):** botão "Organizar" que coloca a estante num modo de edição (lombadas com "×" e balanço leve, com `motion-safe:`). Nesse modo, clicar numa lombada abre um modal (`<dialog>`) "Remover 'X' da estante?", com o foco começando no "Cancelar". O rótulo da lombada vira "Remover X". Depois de remover: o foco vai para o botão "Concluir"; se o disco estava tocando, ele sai do toca-discos; tratar o caso de remover o último disco do gênero filtrado.
+- **Remover disco (etapas 2 a 4):** modal (`<dialog>`) "Remover 'X' da estante?", aberto ao clicar numa lombada no modo de remover, com o foco começando no "Cancelar". A função `handleRemove` no `App` tira o disco da coleção e do toca-discos. Depois de remover, o foco vai para o botão "Concluir"; tratar o caso de remover o último disco do gênero filtrado.
 - **Para pensar:** o disco deveria começar a tocar sozinho ao ser selecionado, ou só ao apertar o play?
 - **Gêneros:** padronizar os nomes em português, como a loja BR do iTunes.
 - **Filtros de gênero:** mostrar só os 6 a 8 gêneros com mais discos e um botão "+N gêneros" para expandir. O gênero ativo aparece sempre, mesmo se não estiver entre os mais frequentes. Fazer junto com a padronização dos gêneros.
