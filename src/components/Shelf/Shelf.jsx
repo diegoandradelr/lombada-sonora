@@ -1,6 +1,13 @@
 import { Spine } from "../Spine/Spine";
 
-export const Shelf = ({ albums, onSelect, selectedId, registerSpine }) => {
+export const Shelf = ({
+  albums,
+  onSelect,
+  selectedId,
+  registerSpine,
+  isRemoving,
+  onRemoveRequest,
+}) => {
   return (
     <div className="w-full ">
       <div className="flex items-end gap-1 px-4 ">
@@ -8,9 +15,12 @@ export const Shelf = ({ albums, onSelect, selectedId, registerSpine }) => {
           <Spine
             key={album.id}
             album={album}
-            onClick={() => onSelect(album.id)}
+            onClick={() =>
+              isRemoving ? onRemoveRequest(album) : onSelect(album.id)
+            }
             isSelected={album.id === selectedId}
             ref={(element) => registerSpine(album.id, element)}
+            isRemoving={isRemoving}
           />
         ))}
       </div>

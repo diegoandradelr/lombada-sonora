@@ -31,6 +31,17 @@
       scale: 0.9;
     }
   }
+
+  --animate-wobble: wobble 0.5s ease-in-out infinite alternate;
+
+  @keyframes wobble {
+    from {
+      rotate: 179deg;
+    }
+    to {
+      rotate: 180.5deg;
+    }
+  }
 }
 
 @utility grooves {
