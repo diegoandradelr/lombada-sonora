@@ -282,6 +282,7 @@ Modelo para as próximas entradas:
 
 ## Pendências
 
+- **Nota dos discos:** permitir escrever ou editar a nota de qualquer disco, inclusive os adicionados pela busca. Provável lugar: no painel "Tocando agora", abaixo da ficha, um botão "Adicionar nota" (ou "Editar nota") que abre um campo de texto. Depende da sessão 8 para a nota ficar salva depois de recarregar a página.
 - **Remover disco (etapas 2 a 4):** modal (`<dialog>`) "Remover 'X' da estante?", aberto ao clicar numa lombada no modo de remover, com o foco começando no "Cancelar". A função `handleRemove` no `App` tira o disco da coleção e do toca-discos. Depois de remover, o foco vai para o botão "Concluir"; tratar o caso de remover o último disco do gênero filtrado.
 - **Para pensar:** o disco deveria começar a tocar sozinho ao ser selecionado, ou só ao apertar o play?
 - **Gêneros:** padronizar os nomes em português, como a loja BR do iTunes.
