@@ -221,6 +221,7 @@ Modelo para as próximas entradas:
 - Os discos adicionados tocam a prévia de uma faixa do próprio álbum.
 - Os meus discos originais também são reconhecidos como "Na estante" na busca.
 - A busca fecha com a tecla Esc ou com o botão "Limpar", e o foco volta para o campo.
+- Ao adicionar um disco pelo teclado, o foco fica no "Na estante" daquele resultado.
 
 **Decisões**
 
@@ -246,6 +247,7 @@ Modelo para as próximas entradas:
 - **Transa não era reconhecido como "Na estante"** → no catálogo, o título vinha como "Transa (2012 Remaster)" e "Transa (Remasterizado)" → a normalização passou a ignorar o que está entre parênteses e colchetes. O Nevermind não é reconhecido porque não está na loja brasileira do iTunes.
 - **Gêneros duplicados em idiomas diferentes** ("Alternativo" e "Alternative") → a loja BR do iTunes dá os gêneros em português, e alguns dos meus estavam em inglês → pendente.
 - **ESLint avisou `no-useless-assignment`** → o `track` começava como `null` e era sobrescrito tanto no `try` quanto no `catch`, então o valor inicial nunca era usado → o aviso deixou de existir quando o `handleAdd` voltou a ser simples.
+- **O foco se perdia ao adicionar um disco pelo teclado** → o botão "Adicionar" é trocado pelo texto "Na estante", e no momento do clique o "Na estante" ainda não existe → guardo o id do disco adicionado num estado (`justAddedId`) e um `useEffect`, que roda depois da tela atualizar, dá o foco no "Na estante" daquele disco, achado num caderno de refs.
 
 **Aprendi**
 
@@ -265,6 +267,9 @@ Modelo para as próximas entradas:
 - Limpar o console e reproduzir o problema, para ver só os erros atuais.
 - `onKeyDown` e `event.key` para reagir a uma tecla específica.
 - Usei `useRef` e `.focus()` sozinho pela primeira vez, para devolver o foco ao campo de busca depois de limpar.
+- `tabIndex={-1}`: o elemento pode receber foco pelo código, mas não entra na ordem do Tab.
+- O `useEffect` roda depois de a tela atualizar, então serve para dar foco num elemento que acabou de aparecer.
+- Arrow function sem chaves devolve o resultado; com chaves, só devolve se tiver `return`. Num ref de callback, o que é devolvido vira a função de limpeza.
 
 **Dúvidas**
 
@@ -274,7 +279,6 @@ Modelo para as próximas entradas:
 
 ## Pendências
 
-- **Foco no "Adicionar":** ao adicionar um disco pelo teclado, o botão é trocado pelo texto "Na estante" e o foco se perde. Decidir para onde o foco deve ir (o próprio "Na estante", o próximo "Adicionar" da lista ou o campo de busca) e resolver com `useRef` e `.focus()`.
 - **Gêneros:** padronizar os nomes em português, como a loja BR do iTunes.
 - **Filtros de gênero:** mostrar só os 6 a 8 gêneros com mais discos e um botão "+N gêneros" para expandir. O gênero ativo aparece sempre, mesmo se não estiver entre os mais frequentes. Fazer junto com a padronização dos gêneros.
 - **Parte 4:** atalho de teclado para focar a busca.
