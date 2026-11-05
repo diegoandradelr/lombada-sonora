@@ -279,6 +279,8 @@ Modelo para as próximas entradas:
 
 ## Pendências
 
+- **Remover disco (modo Organizar):** botão "Organizar" que coloca a estante num modo de edição (lombadas com "×" e balanço leve, com `motion-safe:`). Nesse modo, clicar numa lombada abre um modal (`<dialog>`) "Remover 'X' da estante?", com o foco começando no "Cancelar". O rótulo da lombada vira "Remover X". Depois de remover: o foco vai para o botão "Concluir"; se o disco estava tocando, ele sai do toca-discos; tratar o caso de remover o último disco do gênero filtrado.
+- **Para pensar:** o disco deveria começar a tocar sozinho ao ser selecionado, ou só ao apertar o play?
 - **Gêneros:** padronizar os nomes em português, como a loja BR do iTunes.
 - **Filtros de gênero:** mostrar só os 6 a 8 gêneros com mais discos e um botão "+N gêneros" para expandir. O gênero ativo aparece sempre, mesmo se não estiver entre os mais frequentes. Fazer junto com a padronização dos gêneros.
 - **Parte 4:** atalho de teclado para focar a busca.
