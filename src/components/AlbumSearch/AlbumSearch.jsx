@@ -4,12 +4,14 @@ import { isSameAlbum } from "../../utils/isSameAlbum";
 
 export const AlbumSearch = ({ albums, onAdd }) => {
   const [query, setQuery] = useState("");
-  const searchInputRef = useRef(null);
   const [search, setSearch] = useState({
     term: "",
     results: [],
     failed: false,
   });
+  const [justAddedId, setJustAddedId] = useState(null);
+  const searchInputRef = useRef(null);
+  const ownedRefs = useRef(new Map());
 
   const term = query.trim();
 
@@ -39,6 +41,12 @@ export const AlbumSearch = ({ albums, onAdd }) => {
     };
   }, [query]);
 
+  useEffect(() => {
+    if (justAddedId === null) return;
+
+    ownedRefs.current.get(justAddedId)?.focus();
+  }, [justAddedId]);
+
   const isActive = term.length >= 2;
   const isLoading = isActive && search.term !== term;
   const isDone = isActive && !isLoading;
@@ -47,6 +55,19 @@ export const AlbumSearch = ({ albums, onAdd }) => {
   function clearSearch() {
     setQuery("");
     searchInputRef.current?.focus();
+  }
+
+  function handleAdd(album) {
+    onAdd(album);
+    setJustAddedId(album.id);
+  }
+
+  function registerOwned(id, element) {
+    ownedRefs.current.set(id, element);
+
+    return () => {
+      ownedRefs.current.delete(id);
+    };
   }
 
   return (
@@ -111,14 +132,18 @@ export const AlbumSearch = ({ albums, onAdd }) => {
                 </p>
               </div>
               {albums.some((owned) => isSameAlbum(owned, album)) ? (
-                <span className="ml-auto shrink-0 font-mono text-xs text-muted">
+                <span
+                  tabIndex={-1}
+                  ref={(element) => registerOwned(album.id, element)}
+                  className="ml-auto shrink-0 font-mono text-xs text-muted outline-none focus-visible:text-ink"
+                >
                   Na estante
                 </span>
               ) : (
                 <button
                   type="button"
-                  onClick={() => onAdd(album)}
-                  className="ml-auto shrink-0 font-mono text-xs uppercase tracking-widest underline cursor-pointer hover:text-ink text-muted"
+                  onClick={() => handleAdd(album)}
+                  className="ml-auto shrink-0 font-mono text-xs uppercase tracking-widest underline cursor-pointer hover:text-ink text-muted focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-ink"
                 >
                   Adicionar
                 </button>
