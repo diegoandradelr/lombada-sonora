@@ -42,6 +42,27 @@
       rotate: 180.5deg;
     }
   }
+
+  --animate-record-out: record-out 450ms ease-in forwards;
+
+  @keyframes record-out {
+    0% {
+      translate: 0 0;
+      opacity: 1;
+      width: 2.5rem;
+    }
+    60% {
+      translate: 0 -3rem;
+      opacity: 0;
+      width: 2.5rem;
+    }
+    100% {
+      translate: 0 -3rem;
+      opacity: 0;
+      width: 0;
+      padding: 0;
+    }
+  }
 }
 
 @utility grooves {

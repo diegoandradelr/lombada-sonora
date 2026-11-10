@@ -19,6 +19,7 @@ export const Collection = ({
   const [isRemoving, setIsRemoving] = useState(false);
   const [albumToRemove, setAlbumToRemove] = useState(null);
   const [removedCount, setRemovedCount] = useState(0);
+  const [leavingId, setLeavingId] = useState(null);
   const removeToggleRef = useRef(null);
   const searchInputRef = useRef(null);
 
@@ -39,12 +40,26 @@ export const Collection = ({
   }, [removedCount]);
 
   function handleRemoveRequest(album) {
+    if (leavingId !== null) return;
     setAlbumToRemove(album);
   }
 
   function handleConfirmRemove() {
     const removed = albumToRemove;
+    setAlbumToRemove(null);
 
+    const prefersReducedMotion = window.matchMedia(
+      "(prefers-reduced-motion: reduce)",
+    ).matches;
+
+    if (prefersReducedMotion) {
+      finishRemove(removed);
+    } else {
+      setLeavingId(removed.id);
+    }
+  }
+
+  function finishRemove(removed) {
     const isLastOfFilteredGenre =
       removed.genre === selectedGenre &&
       !albums.some(
@@ -59,9 +74,9 @@ export const Collection = ({
       setIsRemoving(false);
     }
 
+    setLeavingId(null);
     setRemovedCount((count) => count + 1);
     onRemove(removed.id);
-    setAlbumToRemove(null);
   }
 
   return (
@@ -116,6 +131,8 @@ export const Collection = ({
               registerSpine={registerSpine}
               isRemoving={isRemoving}
               onRemoveRequest={handleRemoveRequest}
+              leavingId={leavingId}
+              onLeft={finishRemove}
             />
           ))
         )}

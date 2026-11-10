@@ -8,6 +8,8 @@ export const Shelf = ({
   isRemoving,
   onRemoveRequest,
   children,
+  leavingId,
+  onLeft,
 }) => {
   return (
     <div className="w-full ">
@@ -26,6 +28,8 @@ export const Shelf = ({
             isSelected={album.id === selectedId}
             ref={(element) => registerSpine(album.id, element)}
             isRemoving={isRemoving}
+            isLeaving={album.id === leavingId}
+            onLeaveEnd={() => onLeft(album)}
           />
         ))}
         {children}

@@ -1,19 +1,36 @@
-export const Spine = ({ album, onClick, isSelected, ref, isRemoving }) => {
+export const Spine = ({
+  album,
+  onClick,
+  isSelected,
+  ref,
+  isRemoving,
+  isLeaving,
+  onLeaveEnd,
+}) => {
   const { title, artist, color, height } = album;
   return (
     <button
       style={{ backgroundColor: color, height }}
       className={`relative w-10 shrink-0 cursor-pointer rounded-b-sm p-2 flex justify-between items-center [writing-mode:vertical-rl] rotate-180 select-none transition-transform hover:-translate-y-2 text-paper focus-visible:outline-2 focus-visible:outline-ember focus-visible:outline-offset-2 ${
+        isLeaving
+          ? "animate-record-out overflow-hidden pointer-events-none"
+          : ""
+      } ${
         isSelected
           ? "-translate-y-2 outline-2 outline-ember outline-offset-2"
           : ""
       } ${
-        isRemoving
+        isRemoving && !isLeaving
           ? "motion-safe:animate-wobble odd:[animation-delay:-250ms]"
           : ""
       }`}
       ref={ref}
       onClick={onClick}
+      onAnimationEnd={(event) => {
+        if (isLeaving && event.target === event.currentTarget) {
+          onLeaveEnd();
+        }
+      }}
       aria-label={isRemoving ? `Remover ${title}` : undefined}
       aria-pressed={isRemoving ? undefined : isSelected}
     >
