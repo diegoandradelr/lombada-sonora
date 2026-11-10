@@ -7,10 +7,15 @@ export const Shelf = ({
   registerSpine,
   isRemoving,
   onRemoveRequest,
+  children,
 }) => {
   return (
     <div className="w-full ">
-      <div className="flex items-end gap-1 px-4 ">
+      <div
+        className={`flex items-end gap-1 px-4 ${
+          albums.length === 0 ? "min-h-60 pb-4" : ""
+        }`}
+      >
         {albums.map((album) => (
           <Spine
             key={album.id}
@@ -23,6 +28,7 @@ export const Shelf = ({
             isRemoving={isRemoving}
           />
         ))}
+        {children}
       </div>
       <div className="h-4 w-full bg-wood-500 border-t-3 border-wood-300 rounded-xs shadow-sm" />
     </div>

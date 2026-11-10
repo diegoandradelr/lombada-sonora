@@ -35,6 +35,11 @@ function App() {
     );
   }
 
+  function handleRemove(id) {
+    setAlbums((current) => current.filter((album) => album.id !== id));
+    setSelectedId((currentId) => (currentId === id ? null : currentId));
+  }
+
   function handleSelect(id) {
     setSelectedId((currentId) => (currentId === id ? null : id));
   }
@@ -70,6 +75,7 @@ function App() {
         registerSpine={registerSpine}
         activeFilterRef={activeFilterRef}
         onAdd={handleAdd}
+        onRemove={handleRemove}
       />
     </div>
   );

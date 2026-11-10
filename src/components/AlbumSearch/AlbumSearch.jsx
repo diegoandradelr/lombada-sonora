@@ -2,7 +2,7 @@ import { useEffect, useRef, useState } from "react";
 import { searchAlbums } from "../../services/itunes";
 import { isSameAlbum } from "../../utils/isSameAlbum";
 
-export const AlbumSearch = ({ albums, onAdd }) => {
+export const AlbumSearch = ({ albums, onAdd, inputRef }) => {
   const [query, setQuery] = useState("");
   const [search, setSearch] = useState({
     term: "",
@@ -10,7 +10,6 @@ export const AlbumSearch = ({ albums, onAdd }) => {
     failed: false,
   });
   const [justAddedId, setJustAddedId] = useState(null);
-  const searchInputRef = useRef(null);
   const ownedRefs = useRef(new Map());
 
   const term = query.trim();
@@ -54,7 +53,7 @@ export const AlbumSearch = ({ albums, onAdd }) => {
 
   function clearSearch() {
     setQuery("");
-    searchInputRef.current?.focus();
+    inputRef.current?.focus();
   }
 
   function handleAdd(album) {
@@ -76,7 +75,7 @@ export const AlbumSearch = ({ albums, onAdd }) => {
         Buscar discos para adicionar à coleção
       </label>
       <input
-        ref={searchInputRef}
+        ref={inputRef}
         id="album-search"
         type="search"
         value={query}
