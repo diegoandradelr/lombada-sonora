@@ -223,6 +223,10 @@ Modelo para as próximas entradas:
 - A busca fecha com a tecla Esc ou com o botão "Limpar", e o foco volta para o campo.
 - Ao adicionar um disco pelo teclado, o foco fica no "Na estante" daquele resultado.
 - Modo de remover discos: o botão "Remover discos" faz as lombadas balançarem e ganharem um "×"; nesse modo, clicar numa lombada não toca a música.
+- Modal de confirmação ("Remover 'X' da estante?") feito com a tag `<dialog>`. Fecha com "Cancelar", com a tecla Esc ou clicando fora.
+- Ao confirmar, o disco sai da coleção e, se estava tocando, do toca-discos.
+- Animação de remoção: a lombada sobe e some, e as vizinhas deslizam para ocupar o espaço.
+- Estante vazia: uma prateleira sem discos com a frase "Sua estante está vazia. Use a busca acima para adicionar discos."
 
 **Decisões**
 
@@ -237,6 +241,15 @@ Modelo para as próximas entradas:
 - **Dois discos são o mesmo** se tiverem o mesmo id, ou o mesmo título e artista depois de normalizados (minúsculas, sem acentos, sem espaços extras e sem o que está entre parênteses). A mesma função (`isSameAlbum`) é usada no "Na estante" e na proteção contra duplicados.
 - Depois de "Adicionar", a lista de resultados continua aberta: é ali que aparece o "Na estante", e dá para adicionar vários discos da mesma busca.
 - O botão se chama "Remover discos", e não "Organizar": o rótulo deve dizer exatamente o que o modo faz. Se um dia o modo ganhar outras ações, o nome muda.
+- **Remover num modo à parte, e não no painel:** no painel, remover um disco obrigaria a colocá-lo para tocar antes. No modo de remover, clicar na lombada não toca nada, e para apagar é preciso entrar no modo de propósito.
+- **Confirmação com modal (`<dialog>`):** como quem é clicada é a lombada, estreita demais para mostrar uma confirmação, o modal ficou natural. A tag `<dialog>` com `.showModal()` já bloqueia a página, escurece o fundo, fecha com Esc e avisa o leitor de tela. O modal diz qual disco será removido, e o foco começa no "Cancelar", a opção segura.
+- **Clicar fora do modal cancela, nunca confirma:** fechar sem querer não apaga nada.
+- **O estado do modal mora no `Collection`** (`albumToRemove`), e o `ConfirmRemove` só pergunta e avisa a resposta. Um `useEffect` traduz o estado nos comandos `showModal()` e `close()`, e o `onClose` mantém o estado em dia quando o navegador fecha o modal sozinho (Esc).
+- **A busca some no modo de remover:** com ela na tela, o "Concluir" parecia encerrar a busca. Os filtros ficam, porque ajudam a achar o que remover.
+- **O botão "Remover discos" some com a estante vazia,** em vez de ficar desativado: sem discos, ele não tem utilidade.
+- **Depois de remover, o foco vai para o "Concluir"**, de onde dá para continuar removendo ou sair do modo. Se a estante esvaziou, vai para o campo de busca.
+- **Remover o último disco do gênero filtrado volta o filtro para "Todos"**, e remover o último disco da coleção desliga o modo de remover. As duas mudanças são feitas dentro da própria ação de remover, e não num efeito, para a tela nunca aparecer num estado errado.
+- **Remoção em dois tempos:** primeiro o disco é marcado como "saindo" (`leavingId`) e anima; quando a animação termina (`onAnimationEnd`), ele sai da coleção. Para quem pediu menos movimento, sai na hora, sem animação.
 
 **Problemas e soluções**
 
@@ -251,6 +264,11 @@ Modelo para as próximas entradas:
 - **ESLint avisou `no-useless-assignment`** → o `track` começava como `null` e era sobrescrito tanto no `try` quanto no `catch`, então o valor inicial nunca era usado → o aviso deixou de existir quando o `handleAdd` voltou a ser simples.
 - **O foco se perdia ao adicionar um disco pelo teclado** → o botão "Adicionar" é trocado pelo texto "Na estante", e no momento do clique o "Na estante" ainda não existe → guardo o id do disco adicionado num estado (`justAddedId`) e um `useEffect`, que roda depois da tela atualizar, dá o foco no "Na estante" daquele disco, achado num caderno de refs.
 - **Depois de renomear com F2, o modo parou de aparecer nas lombadas** → o VS Code renomeou a variável no `Spine` mas manteve o nome antigo da prop (`isOrganizing: isRemoving`), enquanto o `Shelf` já enviava `isRemoving` → deixei o mesmo nome dos dois lados. A sintaxe `{ nomeQueChega: nomeQueUso }` renomeia durante a desestruturação.
+- **Clicar dentro do modal, na margem, também o fecharia** → o espaço interno (`p-6`) pertencia ao próprio `<dialog>`, então o clique ali tinha `target` igual ao `currentTarget`, como um clique no fundo → passei o espaço interno para uma `div` de dentro e deixei o `<dialog>` com `p-0`.
+- **O filtro de um gênero que deixou de existir deixava a estante vazia** → o `selectedGenre` continuava apontando para um gênero sem discos → ao remover o último disco do gênero filtrado, o filtro volta para "Todos".
+- **Com todos os discos removidos, a estante sumia** → sem prateleiras, não sobrava nada na tela → estado vazio: uma prateleira sem discos, com uma frase convidando a usar a busca.
+- **O foco se perdia ao remover pelo teclado** → o modal devolve o foco à lombada que o abriu, que acabou de sumir; e enquanto o modal está aberto, nada fora dele pode receber foco → um contador (`removedCount`) muda a cada remoção, e um `useEffect` no `Collection`, que roda depois do efeito do modal, leva o foco ao "Concluir" ou ao campo de busca.
+- **Depois da primeira tentativa de remover com animação, o disco não saía e o modal não abria mais** → a classe do balanço (`motion-safe:animate-wobble`) vencia a da saída na disputa pela propriedade `animation`, então a saída nunca rodava nem terminava; o `leavingId` ficava preso, e a proteção contra duas remoções ao mesmo tempo bloqueava os próximos pedidos → a lombada que está saindo deixou de balançar (`isRemoving && !isLeaving`).
 
 **Aprendi**
 
@@ -273,6 +291,19 @@ Modelo para as próximas entradas:
 - `tabIndex={-1}`: o elemento pode receber foco pelo código, mas não entra na ordem do Tab.
 - O `useEffect` roda depois de a tela atualizar, então serve para dar foco num elemento que acabou de aparecer.
 - Arrow function sem chaves devolve o resultado; com chaves, só devolve se tiver `return`. Num ref de callback, o que é devolvido vira a função de limpeza.
+- `<dialog>` com `.showModal()` e `.close()`, a propriedade `.open` e o evento `onClose`. A variante `backdrop:` do Tailwind estiliza o fundo do modal.
+- `useEffect` como ponte entre um estado do React e um comando do navegador (abrir e fechar o modal).
+- `event.target` (o elemento clicado) e `event.currentTarget` (o elemento que está ouvindo).
+- Remover de uma lista sem modificar o estado: `current.filter((item) => item.id !== id)`.
+- A prop `children`: o conteúdo entre as tags de um componente.
+- Quando um componente sai da tela, o React descarta o estado dele.
+- Quando uma mudança de estado é consequência de uma ação, fazer a mudança dentro da própria ação, e não num efeito.
+- Os efeitos dos componentes filhos rodam antes dos efeitos dos pais.
+- Um contador num estado serve para disparar um efeito a cada vez que algo acontece (um `true` não mudaria na segunda vez).
+- Animação de saída no React: marcar o elemento como "saindo", animar, e só removê-lo no `onAnimationEnd`.
+- `window.matchMedia("(prefers-reduced-motion: reduce)")` faz no JavaScript a mesma pergunta que o `motion-safe:` faz no CSS.
+- `translate` e `rotate` são propriedades separadas: animar uma não desfaz a outra.
+- Quando um estado fica "preso", perguntar o que deveria tê-lo liberado e por que não aconteceu.
 
 **Dúvidas**
 
@@ -282,13 +313,13 @@ Modelo para as próximas entradas:
 
 ## Pendências
 
-- **Nota dos discos:** permitir escrever ou editar a nota de qualquer disco, inclusive os adicionados pela busca. Provável lugar: no painel "Tocando agora", abaixo da ficha, um botão "Adicionar nota" (ou "Editar nota") que abre um campo de texto. Depende da sessão 8 para a nota ficar salva depois de recarregar a página.
-- **Remover disco (etapas 2 a 4):** modal (`<dialog>`) "Remover 'X' da estante?", aberto ao clicar numa lombada no modo de remover, com o foco começando no "Cancelar". A função `handleRemove` no `App` tira o disco da coleção e do toca-discos. Depois de remover, o foco vai para o botão "Concluir"; tratar o caso de remover o último disco do gênero filtrado.
-- **Para pensar:** o disco deveria começar a tocar sozinho ao ser selecionado, ou só ao apertar o play?
 - **Gêneros:** padronizar os nomes em português, como a loja BR do iTunes.
 - **Filtros de gênero:** mostrar só os 6 a 8 gêneros com mais discos e um botão "+N gêneros" para expandir. O gênero ativo aparece sempre, mesmo se não estiver entre os mais frequentes. Fazer junto com a padronização dos gêneros.
 - **Parte 4:** atalho de teclado para focar a busca.
-- **Sessão 8:** salvar a coleção no navegador.
+- **Sessão 8:** salvar a coleção no navegador (discos adicionados e removidos).
+- **Nota dos discos:** permitir escrever ou editar a nota de qualquer disco, inclusive os adicionados pela busca. Provável lugar: no painel "Tocando agora", abaixo da ficha, um botão "Adicionar nota" (ou "Editar nota") que abre um campo de texto. Fazer depois da sessão 8, para a nota ficar salva depois de recarregar a página.
+- **Para pensar:** o disco deveria começar a tocar sozinho ao ser selecionado, ou só ao apertar o play?
+- **Melhoria futura:** "Desfazer" depois de remover um disco, em vez de (ou além de) confirmar antes.
 - Reescrever as notas dos discos com frases pessoais.
 - Corrigir a nota do disco _Nação Zumbi_ (o primeiro de estúdio pós-Chico Science foi _Rádio S.Amb.A_, de 2000).
 - Conhecer o Context para reduzir o _prop drilling_.
