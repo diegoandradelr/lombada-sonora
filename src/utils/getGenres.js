@@ -1,6 +1,7 @@
-export function getGenres(albums) {
-  const genres = albums.map((album) => album.genre);
-  const unique = new Set(genres);
+import { GENRES } from "../data/genres";
 
-  return [...unique].sort((a, b) => a.localeCompare(b, "pt-BR"));
+export function getGenres(albums) {
+  return GENRES.filter((genre) =>
+    albums.some((album) => album.genre === genre),
+  );
 }

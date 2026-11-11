@@ -1,6 +1,34 @@
 const BASE_URL = "https://itunes.apple.com/search";
 const LOOKUP_URL = "https://itunes.apple.com/lookup";
 
+const STORE_GENRES = {
+  brasileira: "MPB",
+  mpb: "MPB",
+  samba: "MPB",
+  "bossa nova": "MPB",
+  rock: "Rock",
+  "hard rock": "Rock",
+  metal: "Rock",
+  "heavy metal": "Rock",
+  punk: "Rock",
+  alternativo: "Alternativo",
+  indie: "Alternativo",
+  soul: "Soul",
+  "r&b/soul": "Soul",
+  funk: "Soul",
+  rap: "Rap",
+  "hip-hop/rap": "Rap",
+  "hip-hop": "Rap",
+  reggae: "Reggae",
+  "reggae raiz": "Reggae",
+  pagode: "MPB",
+};
+
+function toShelfGenre(storeGenre) {
+  const key = storeGenre?.toLowerCase().trim();
+  return STORE_GENRES[key] ?? "Outros";
+}
+
 async function findPreviewByTrack(artist, track) {
   const params = new URLSearchParams({
     term: `${artist} ${track}`,
@@ -71,7 +99,7 @@ export async function searchAlbums(term) {
     title: result.collectionName,
     artist: result.artistName,
     year: new Date(result.releaseDate).getFullYear(),
-    genre: result.primaryGenreName,
+    genre: toShelfGenre(result.primaryGenreName),
     cover: result.artworkUrl100,
   }));
 }
