@@ -227,6 +227,7 @@ Modelo para as próximas entradas:
 - Ao confirmar, o disco sai da coleção e, se estava tocando, do toca-discos.
 - Animação de remoção: a lombada sobe e some, e as vizinhas deslizam para ocupar o espaço.
 - Estante vazia: uma prateleira sem discos com a frase "Sua estante está vazia. Use a busca acima para adicionar discos."
+- Lista própria de gêneros para a estante, com os gêneros da loja traduzidos para ela.
 
 **Decisões**
 
@@ -236,7 +237,7 @@ Modelo para as próximas entradas:
 - Resultados também com "etiqueta" (`{ term, results, failed }`).
 - A coleção virou estado no `App`; o `albums.js` passou a ser só o valor inicial.
 - "Na estante" é calculado com `.some()` a partir da coleção, então muda sozinho quando um disco é adicionado.
-- Os gêneros novos aparecem nos filtros automaticamente, porque a lista de gêneros é calculada a partir da coleção.
+- Os filtros mostram só os gêneros que têm discos, calculados a partir da coleção. Por isso, um botão aparece ou some sozinho quando um disco é adicionado ou removido.
 - **A prévia é buscada na hora de tocar, e não ao adicionar.** Uma única função, `getPreview`, decide o caminho: discos com faixa buscam por artista + faixa; discos sem faixa consultam o álbum pelo id (lookup). As duas devolvem o mesmo formato, `{ url, track }`.
 - **Dois discos são o mesmo** se tiverem o mesmo id, ou o mesmo título e artista depois de normalizados (minúsculas, sem acentos, sem espaços extras e sem o que está entre parênteses). A mesma função (`isSameAlbum`) é usada no "Na estante" e na proteção contra duplicados.
 - Depois de "Adicionar", a lista de resultados continua aberta: é ali que aparece o "Na estante", e dá para adicionar vários discos da mesma busca.
@@ -250,6 +251,11 @@ Modelo para as próximas entradas:
 - **Depois de remover, o foco vai para o "Concluir"**, de onde dá para continuar removendo ou sair do modo. Se a estante esvaziou, vai para o campo de busca.
 - **Remover o último disco do gênero filtrado volta o filtro para "Todos"**, e remover o último disco da coleção desliga o modo de remover. As duas mudanças são feitas dentro da própria ação de remover, e não num efeito, para a tela nunca aparecer num estado errado.
 - **Remoção em dois tempos:** primeiro o disco é marcado como "saindo" (`leavingId`) e anima; quando a animação termina (`onAnimationEnd`), ele sai da coleção. Para quem pediu menos movimento, sai na hora, sem animação.
+- **A estante tem a sua própria lista de gêneros** (MPB, Rock, Manguebeat, Alternativo, Soul, Rap, Reggae e Outros), e não os da loja. Os gêneros da loja são definidos pelas gravadoras, misturam estilos ("Brasileira" juntava manguebeat, rock, soul e MPB) e mudam sem critério de disco para disco.
+- **Critério para os casos de fronteira:** o disco vai para o gênero onde eu procuraria por ele. Gêneros amplos podem ter um disco só; gêneros específicos precisam de pelo menos dois.
+- **Manguebeat como gênero próprio**: é a parte da coleção que mais tem a minha cara.
+- **Os gêneros da loja são traduzidos no adaptador** (`toShelfGenre`), com um dicionário. O que não tem tradução vai para "Outros".
+- **Os filtros seguem a ordem da minha lista**, e só aparecem os gêneros que têm discos.
 
 **Problemas e soluções**
 
@@ -260,7 +266,6 @@ Modelo para as próximas entradas:
 - **Disco adicionado offline ficava sem música para sempre** → a faixa era buscada só no momento de adicionar; se a busca falhasse, o `null` ficava gravado e ninguém tentava de novo → a prévia passou a ser buscada na hora de tocar. Assim uma falha momentânea nunca vira permanente, e o "Adicionar" ficou instantâneo.
 - **Os meus discos originais não apareciam como "Na estante"** → eles têm ids de 1 a 18, inventados por mim, e a busca traz os ids do iTunes → a comparação passou a considerar também título e artista.
 - **Transa não era reconhecido como "Na estante"** → no catálogo, o título vinha como "Transa (2012 Remaster)" e "Transa (Remasterizado)" → a normalização passou a ignorar o que está entre parênteses e colchetes. O Nevermind não é reconhecido porque não está na loja brasileira do iTunes.
-- **Gêneros duplicados em idiomas diferentes** ("Alternativo" e "Alternative") → a loja BR do iTunes dá os gêneros em português, e alguns dos meus estavam em inglês → pendente.
 - **ESLint avisou `no-useless-assignment`** → o `track` começava como `null` e era sobrescrito tanto no `try` quanto no `catch`, então o valor inicial nunca era usado → o aviso deixou de existir quando o `handleAdd` voltou a ser simples.
 - **O foco se perdia ao adicionar um disco pelo teclado** → o botão "Adicionar" é trocado pelo texto "Na estante", e no momento do clique o "Na estante" ainda não existe → guardo o id do disco adicionado num estado (`justAddedId`) e um `useEffect`, que roda depois da tela atualizar, dá o foco no "Na estante" daquele disco, achado num caderno de refs.
 - **Depois de renomear com F2, o modo parou de aparecer nas lombadas** → o VS Code renomeou a variável no `Spine` mas manteve o nome antigo da prop (`isOrganizing: isRemoving`), enquanto o `Shelf` já enviava `isRemoving` → deixei o mesmo nome dos dois lados. A sintaxe `{ nomeQueChega: nomeQueUso }` renomeia durante a desestruturação.
@@ -269,6 +274,7 @@ Modelo para as próximas entradas:
 - **Com todos os discos removidos, a estante sumia** → sem prateleiras, não sobrava nada na tela → estado vazio: uma prateleira sem discos, com uma frase convidando a usar a busca.
 - **O foco se perdia ao remover pelo teclado** → o modal devolve o foco à lombada que o abriu, que acabou de sumir; e enquanto o modal está aberto, nada fora dele pode receber foco → um contador (`removedCount`) muda a cada remoção, e um `useEffect` no `Collection`, que roda depois do efeito do modal, leva o foco ao "Concluir" ou ao campo de busca.
 - **Depois da primeira tentativa de remover com animação, o disco não saía e o modal não abria mais** → a classe do balanço (`motion-safe:animate-wobble`) vencia a da saída na disputa pela propriedade `animation`, então a saída nunca rodava nem terminava; o `leavingId` ficava preso, e a proteção contra duas remoções ao mesmo tempo bloqueava os próximos pedidos → a lombada que está saindo deixou de balançar (`isRemoving && !isLeaving`).
+- **Gêneros duplicados em idiomas diferentes** ("Alternativo" e "Alternative") → um script no console comparou os meus gêneros com os da loja e mostrou que os da loja não eram confiáveis (gêneros genéricos e, às vezes, de outro disco) → criei a minha lista e uma tradução da loja para ela.
 
 **Aprendi**
 
@@ -304,6 +310,9 @@ Modelo para as próximas entradas:
 - `window.matchMedia("(prefers-reduced-motion: reduce)")` faz no JavaScript a mesma pergunta que o `motion-safe:` faz no CSS.
 - `translate` e `rotate` são propriedades separadas: animar uma não desfaz a outra.
 - Quando um estado fica "preso", perguntar o que deveria tê-lo liberado e por que não aconteceu.
+- Import dinâmico: `await import("/src/data/albums.js")` carrega um arquivo do projeto direto no console.
+- `for...of` com `await` faz uma coisa de cada vez, sem disparar vários pedidos juntos.
+- Um objeto pode servir de dicionário, e `objeto[variavel]` lê a propriedade cujo nome está na variável.
 
 **Dúvidas**
 
@@ -313,11 +322,9 @@ Modelo para as próximas entradas:
 
 ## Pendências
 
-- **Gêneros:** padronizar os nomes em português, como a loja BR do iTunes.
-- **Filtros de gênero:** mostrar só os 6 a 8 gêneros com mais discos e um botão "+N gêneros" para expandir. O gênero ativo aparece sempre, mesmo se não estiver entre os mais frequentes. Fazer junto com a padronização dos gêneros.
 - **Parte 4:** atalho de teclado para focar a busca.
 - **Sessão 8:** salvar a coleção no navegador (discos adicionados e removidos).
-- **Nota dos discos:** permitir escrever ou editar a nota de qualquer disco, inclusive os adicionados pela busca. Provável lugar: no painel "Tocando agora", abaixo da ficha, um botão "Adicionar nota" (ou "Editar nota") que abre um campo de texto. Fazer depois da sessão 8, para a nota ficar salva depois de recarregar a página.
+- **Editar a ficha do disco:** permitir escrever ou editar a nota e mudar o gênero de qualquer disco, inclusive os adicionados pela busca (um disco de manguebeat adicionado pela busca chega como MPB, porque a loja não tem essa informação). Provável lugar: no painel "Tocando agora", abaixo da ficha. Fazer depois da sessão 8, para as mudanças ficarem salvas depois de recarregar a página.
 - **Para pensar:** o disco deveria começar a tocar sozinho ao ser selecionado, ou só ao apertar o play?
 - **Melhoria futura:** "Desfazer" depois de remover um disco, em vez de (ou além de) confirmar antes.
 - Reescrever as notas dos discos com frases pessoais.
