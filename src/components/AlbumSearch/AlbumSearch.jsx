@@ -80,7 +80,8 @@ export const AlbumSearch = ({ albums, onAdd, inputRef }) => {
         type="search"
         value={query}
         onChange={(event) => setQuery(event.target.value)}
-        placeholder="Buscar disco ou artista…"
+        placeholder="Buscar disco ou artista… (atalho: /)"
+        aria-keyshortcuts="/"
         autoComplete="off"
         className="w-full bg-transparent border-b border-line py-2 font-mono text-sm placeholder:text-muted outline-none focus:border-ink"
         onKeyDown={(event) => {

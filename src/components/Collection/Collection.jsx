@@ -39,6 +39,23 @@ export const Collection = ({
     }
   }, [removedCount]);
 
+  useEffect(() => {
+    function handleKeyDown(event) {
+      if (event.key !== "/") return;
+
+      const tag = event.target.tagName;
+      if (tag === "INPUT" || tag === "TEXTAREA") return;
+
+      event.preventDefault();
+      searchInputRef.current?.focus();
+    }
+
+    document.addEventListener("keydown", handleKeyDown);
+    return () => {
+      document.removeEventListener("keydown", handleKeyDown);
+    };
+  }, []);
+
   function handleRemoveRequest(album) {
     if (leavingId !== null) return;
     setAlbumToRemove(album);
