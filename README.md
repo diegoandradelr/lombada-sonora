@@ -19,6 +19,7 @@ A personal record collection built with React and Tailwind CSS. Instead of the u
 - [x] Remove records from the shelf, with confirmation and an exit animation
 - [x] Records already on the shelf are recognized in the search, even in remastered editions
 - [x] Added records play a preview from one of their own tracks
+- [x] Keyboard shortcut (/) to focus the search
 - [ ] Save the collection in the browser
 - [ ] Mobile layout
 

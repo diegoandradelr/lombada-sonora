@@ -212,7 +212,7 @@ Modelo para as próximas entradas:
 
 ---
 
-## Sessão 7: busca e novos discos (em andamento)
+## Sessão 7: busca e novos discos
 
 **O que fiz**
 
@@ -228,6 +228,7 @@ Modelo para as próximas entradas:
 - Animação de remoção: a lombada sobe e some, e as vizinhas deslizam para ocupar o espaço.
 - Estante vazia: uma prateleira sem discos com a frase "Sua estante está vazia. Use a busca acima para adicionar discos."
 - Lista própria de gêneros para a estante, com os gêneros da loja traduzidos para ela.
+- Atalho de teclado: a tecla `/` leva o foco para o campo de busca, de qualquer ponto da página.
 
 **Decisões**
 
@@ -256,6 +257,9 @@ Modelo para as próximas entradas:
 - **Manguebeat como gênero próprio**: é a parte da coleção que mais tem a minha cara.
 - **Os gêneros da loja são traduzidos no adaptador** (`toShelfGenre`), com um dicionário. O que não tem tradução vai para "Outros".
 - **Os filtros seguem a ordem da minha lista**, e só aparecem os gêneros que têm discos.
+- **O atalho `/` é ignorado quando a tecla é apertada num campo de texto** (`INPUT` ou `TEXTAREA`), para a barra poder ser digitada normalmente. Conferir o tipo do elemento, e não só o campo de busca, já protege campos futuros, como o da nota.
+- **O atalho é avisado no placeholder** ("atalho: /") para quem vê a tela, e com `aria-keyshortcuts="/"` para o leitor de tela.
+- **O `Esc` limpa o texto e o `Tab` sai do campo.** Pesquisei como outros sites fazem: o YouTube não tem o atalho `/` e o `Esc` não faz nada no campo; o GitHub tem o atalho, e o `Esc` sai porque a busca dele se expande como um painel, e o `Esc` fecha esse painel. Concluí que o `Esc` costuma fechar ou desfazer o que se abriu. Como a minha busca é um campo simples sempre visível, o que dá para desfazer é o texto digitado.
 
 **Problemas e soluções**
 
@@ -274,6 +278,7 @@ Modelo para as próximas entradas:
 - **Com todos os discos removidos, a estante sumia** → sem prateleiras, não sobrava nada na tela → estado vazio: uma prateleira sem discos, com uma frase convidando a usar a busca.
 - **O foco se perdia ao remover pelo teclado** → o modal devolve o foco à lombada que o abriu, que acabou de sumir; e enquanto o modal está aberto, nada fora dele pode receber foco → um contador (`removedCount`) muda a cada remoção, e um `useEffect` no `Collection`, que roda depois do efeito do modal, leva o foco ao "Concluir" ou ao campo de busca.
 - **Depois da primeira tentativa de remover com animação, o disco não saía e o modal não abria mais** → a classe do balanço (`motion-safe:animate-wobble`) vencia a da saída na disputa pela propriedade `animation`, então a saída nunca rodava nem terminava; o `leavingId` ficava preso, e a proteção contra duas remoções ao mesmo tempo bloqueava os próximos pedidos → a lombada que está saindo deixou de balançar (`isRemoving && !isLeaving`).
+- **O atalho `/` só funcionava com o foco "solto" na página** → a primeira versão conferia `event.target === document.body`, e com o foco num botão (uma lombada, um filtro) o `target` era o botão → passei a conferir o contrário: ignorar só quando a tecla vem de um campo de texto (`event.target.tagName`).
 - **Gêneros duplicados em idiomas diferentes** ("Alternativo" e "Alternative") → um script no console comparou os meus gêneros com os da loja e mostrou que os da loja não eram confiáveis (gêneros genéricos e, às vezes, de outro disco) → criei a minha lista e uma tradução da loja para ela.
 
 **Aprendi**
@@ -313,6 +318,13 @@ Modelo para as próximas entradas:
 - Import dinâmico: `await import("/src/data/albums.js")` carrega um arquivo do projeto direto no console.
 - `for...of` com `await` faz uma coisa de cada vez, sem disparar vários pedidos juntos.
 - Um objeto pode servir de dicionário, e `objeto[variavel]` lê a propriedade cujo nome está na variável.
+- Um componente pode ter vários `useEffect`, um por assunto, em vez de juntar tudo num só.
+- Ouvir uma tecla na página inteira: `document.addEventListener("keydown", ...)` dentro de um efeito, com `removeEventListener` na limpeza e array vazio para registrar uma vez só.
+- `event.target.tagName` diz o tipo do elemento (`"INPUT"`, `"BUTTON"`, `"BODY"`), sempre em maiúsculas.
+- `event.preventDefault()` impede a ação padrão da tecla (aqui, a barra ser escrita no campo logo depois de receber o foco).
+- O `?.` também protege quando a ref está vazia porque o elemento não está na tela (`null`).
+- Com um `<dialog>` aberto por `showModal()`, o resto da página fica inerte: o navegador ignora `.focus()` em elementos fora do modal.
+- Não existe uma convenção única para o teclado: vale olhar como outros sites fazem e decidir com uma justificativa.
 
 **Dúvidas**
 
@@ -322,7 +334,6 @@ Modelo para as próximas entradas:
 
 ## Pendências
 
-- **Parte 4:** atalho de teclado para focar a busca.
 - **Sessão 8:** salvar a coleção no navegador (discos adicionados e removidos).
 - **Editar a ficha do disco:** permitir escrever ou editar a nota e mudar o gênero de qualquer disco, inclusive os adicionados pela busca (um disco de manguebeat adicionado pela busca chega como MPB, porque a loja não tem essa informação). Provável lugar: no painel "Tocando agora", abaixo da ficha. Fazer depois da sessão 8, para as mudanças ficarem salvas depois de recarregar a página.
 - **Para pensar:** o disco deveria começar a tocar sozinho ao ser selecionado, ou só ao apertar o play?
