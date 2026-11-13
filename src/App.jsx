@@ -1,4 +1,4 @@
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { albums as initialAlbums } from "./data/albums";
 import { SPINE_COLORS } from "./data/spineColors";
 import { pickRandom, randomBetween } from "./utils/random";
@@ -7,10 +7,17 @@ import { NowPlaying } from "./components/NowPlaying/NowPlaying";
 import { Collection } from "./components/Collection/Collection";
 
 function App() {
-  const [albums, setAlbums] = useState(initialAlbums);
+  const [albums, setAlbums] = useState(() => {
+    const saved = localStorage.getItem("lombada-sonora:albums");
+    return saved ? JSON.parse(saved) : initialAlbums;
+  });
   const [selectedId, setSelectedId] = useState(null);
   const spineRefs = useRef(new Map());
   const activeFilterRef = useRef(null);
+
+  useEffect(() => {
+    localStorage.setItem("lombada-sonora:albums", JSON.stringify(albums));
+  }, [albums]);
 
   const selectedAlbum = albums.find((album) => album.id === selectedId);
 
