@@ -8,8 +8,18 @@ import { Collection } from "./components/Collection/Collection";
 
 function App() {
   const [albums, setAlbums] = useState(() => {
-    const saved = localStorage.getItem("lombada-sonora:albums");
-    return saved ? JSON.parse(saved) : initialAlbums;
+    try {
+      const saved = localStorage.getItem("lombada-sonora:albums");
+      if (saved) {
+        const parsed = JSON.parse(saved);
+        if (Array.isArray(parsed)) {
+          return parsed;
+        }
+      }
+    } catch (error) {
+      console.error("Error reading from localStorage:", error);
+    }
+    return initialAlbums;
   });
   const [selectedId, setSelectedId] = useState(null);
   const spineRefs = useRef(new Map());
