@@ -332,10 +332,56 @@ Modelo para as próximas entradas:
 
 ---
 
+## Sessão 8: salvar a coleção
+
+**O que fiz**
+
+- A coleção é salva no navegador (`localStorage`): discos adicionados e removidos continuam do mesmo jeito depois de recarregar a página.
+- Hook customizado `useLocalStorage`, em `src/hooks`, que funciona como um `useState` que se salva e se carrega sozinho. No `App`, virou uma linha: `useLocalStorage("lombada-sonora:albums", initialAlbums)`.
+
+**Decisões**
+
+- **A chave tem o nome do projeto como prefixo** (`lombada-sonora:albums`). O `localStorage` é separado por endereço, não por projeto, e outros projetos que rodam no mesmo `localhost:5173` já tinham uma chave `albums`.
+- **Sem nada salvo, a estante começa pelo `albums.js`.** Com uma estante vazia salva (`"[]"`), ela continua vazia: "não salvei nada" é diferente de "salvei uma estante vazia".
+- **Um dado salvo estragado nunca quebra a página.** Se o texto não for JSON, ou for JSON mas não for uma lista, a estante volta para os discos originais e um aviso aparece no console.
+- **Salvar os dados, não o momento.** Só a coleção é salva. A página reabre sem disco tocando e com o filtro em "Todos": um disco tocando sozinho seria bloqueado pelo navegador (áudio só começa depois de um clique na página), e um filtro salvo poderia dar a impressão de que os outros discos sumiram.
+- **A leitura acontece uma vez só, ao abrir a página**, com uma função passada ao `useState`, e não num efeito.
+
+**Problemas e soluções**
+
+- **Ao recarregar, a estante voltava ao original** → o estado do React mora na memória da aba, que é apagada ao recarregar → salvar no `localStorage` a cada mudança e ler ao abrir.
+- **O `localStorage` só guarda texto** → uma lista guardada direto virava `"1,2,3"`, sem colchetes → `JSON.stringify` para guardar e `JSON.parse` para ler.
+- **Com o valor salvo trocado por `abc`, a página ficou em branco** → o `JSON.parse` lança um erro com texto que não é JSON, e um erro durante a montagem do `App` derruba a tela inteira → `try/catch` em volta da leitura, voltando para os discos originais.
+- **Com o valor salvo `123`, a página quebrava com `albums.find is not a function`** → `123` é JSON válido, então o `JSON.parse` não dá erro e o `catch` não roda → conferir com `Array.isArray` antes de usar. Na primeira tentativa, uma linha que sobrou da versão antiga (`return JSON.parse(saved)`) devolvia o valor sem passar pela conferência.
+- **Ao criar o hook, a chave continuava escrita à mão no efeito que salva** → o hook leria de uma chave e salvaria em outra → usar o parâmetro `key` nos dois lugares e incluí-lo nas dependências.
+- **No `App`, passei a função inteira de leitura para o hook**, e depois a chave sem o prefixo → o hook recebeu a função como chave e nenhum valor inicial, e o `albums` virou `undefined` → o `App` só passa a chave e o valor inicial; o trabalho todo mora no hook.
+- **A mensagem de erro aparecia duas vezes no console** → em desenvolvimento, o `StrictMode` executa a função do `useState` duas vezes de propósito, para revelar código que muda a cada execução → não é bug; na versão publicada aparece uma vez só.
+- **Achei que tinha apagado o projeto** → a pasta estava em outro lugar → `git status` mostrou que estava tudo inteiro e que um commit ainda não tinha ido para o GitHub. Agora faço o `git push` logo depois de cada commit.
+
+**Aprendi**
+
+- `localStorage`: `setItem`, `getItem` e `removeItem`. Os dados ficam no navegador, separados por endereço, e sobrevivem ao recarregamento.
+- `JSON.stringify` transforma um valor em texto; `JSON.parse` faz o caminho contrário.
+- `getItem` devolve `null` quando a chave não existe.
+- No console, `undefined` depois de um comando quer dizer só que ele não devolve nada.
+- A aba **Aplicativo** do DevTools mostra e permite editar ou apagar o que está no `localStorage`.
+- `useState(() => ...)`: a função roda só na primeira renderização (inicialização preguiçosa).
+- O `try/catch` só protege contra erros. Um dado lido sem erro, mas com o formato errado, precisa ser conferido (`Array.isArray`).
+- Um dado que vem de fora do código (armazenamento, API) não é confiável: conferir antes de usar.
+- Hook customizado: uma função que começa com `use` e usa hooks por dentro. Deve ser chamado no topo do componente, como qualquer hook.
+- Commit do tipo `refactor`: muda a organização do código, não o comportamento.
+- `git status` diz se há commits que ainda não foram para o GitHub ("ahead of 'origin/main'") e mudanças fora de qualquer commit.
+- O `StrictMode` executa algumas funções duas vezes em desenvolvimento.
+
+**Dúvidas**
+
+- O `useLocalStorage` só aceita listas salvas (por causa do `Array.isArray`). Se um dia ele for usado para outra coisa, como um texto, a conferência precisa mudar.
+
+---
+
 ## Pendências
 
-- **Sessão 8:** salvar a coleção no navegador (discos adicionados e removidos).
-- **Editar a ficha do disco:** permitir escrever ou editar a nota e mudar o gênero de qualquer disco, inclusive os adicionados pela busca (um disco de manguebeat adicionado pela busca chega como MPB, porque a loja não tem essa informação). Provável lugar: no painel "Tocando agora", abaixo da ficha. Fazer depois da sessão 8, para as mudanças ficarem salvas depois de recarregar a página.
+- **Editar a ficha do disco:** permitir escrever ou editar a nota e mudar o gênero de qualquer disco, inclusive os adicionados pela busca (um disco de manguebeat adicionado pela busca chega como MPB, porque a loja não tem essa informação). Provável lugar: no painel "Tocando agora", abaixo da ficha. É o próximo passo: com a sessão 8 pronta, as mudanças já ficam salvas ao recarregar a página.
 - **Para pensar:** o disco deveria começar a tocar sozinho ao ser selecionado, ou só ao apertar o play?
 - **Melhoria futura:** "Desfazer" depois de remover um disco, em vez de (ou além de) confirmar antes.
 - Reescrever as notas dos discos com frases pessoais.
