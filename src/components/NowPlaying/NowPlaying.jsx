@@ -61,7 +61,7 @@ export const NowPlaying = ({ album, onReturn, onUpdate }) => {
         aria-hidden="true"
         className="absolute right-0 top-8 bottom-8 w-px bg-line"
       />
-      <div className="flex items-center justify-between">
+      <div className="shrink-0 flex items-center justify-between">
         <span className="font-mono text-sm text-ember uppercase tracking-widest">
           Tocando agora
         </span>
@@ -88,8 +88,8 @@ export const NowPlaying = ({ album, onReturn, onUpdate }) => {
           </button>
         )}
       </div>
-      <div className="flex flex-col gap-6 ">
-        <div className="w-full max-w-[38vh]">
+      <div className="flex min-h-0 flex-1 flex-col gap-6">
+        <div className="shrink-0 w-full max-w-[38vh]">
           <Turntable
             album={album}
             isPlaying={isPlaying}
@@ -97,8 +97,10 @@ export const NowPlaying = ({ album, onReturn, onUpdate }) => {
             onTogglePlay={togglePlay}
           />
         </div>
-        <AlbumDetails album={album} onUpdate={onUpdate} />
-        <p role="status" className="font-mono text-xs text-muted">
+        <div className="-mx-2 min-h-0 overflow-y-auto px-2 pb-2 scrollbar-thin [scrollbar-color:var(--color-line)_transparent]">
+          <AlbumDetails album={album} onUpdate={onUpdate} />
+        </div>
+        <p role="status" className="shrink-0 font-mono text-xs text-muted">
           {isLoading && "Buscando a faixa…"}
           {isUnavailable && "Prévia indisponível para este disco"}
           {previewUrl && (
