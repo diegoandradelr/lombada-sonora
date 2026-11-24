@@ -24,8 +24,9 @@ export const Collection = ({
   const searchInputRef = useRef(null);
 
   const genres = getGenres(albums);
-  const visibleAlbums = selectedGenre
-    ? albums.filter((album) => album.genre === selectedGenre)
+  const activeGenre = genres.includes(selectedGenre) ? selectedGenre : null;
+  const visibleAlbums = activeGenre
+    ? albums.filter((album) => album.genre === activeGenre)
     : albums;
   const shelves = chunk(visibleAlbums, 6);
 
@@ -127,7 +128,7 @@ export const Collection = ({
       )}
       <GenreFilter
         genres={genres}
-        selectedGenre={selectedGenre}
+        selectedGenre={activeGenre}
         onChange={setSelectedGenre}
         activeFilterRef={activeFilterRef}
       />
