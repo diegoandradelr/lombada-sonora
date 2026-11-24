@@ -95,7 +95,7 @@ export const Collection = ({
   return (
     <main className="p-6">
       <div className="mb-8 flex items-center justify-between gap-4">
-        <h1 className="font-display text-4xl font-bold">Minha estante</h1>
+        <h1 className="font-display text-3xl font-bold">Minha estante</h1>
         {albums.length > 0 && (
           <button
             ref={removeToggleRef}

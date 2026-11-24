@@ -2,6 +2,7 @@ import { useEffect, useRef, useState } from "react";
 import { getPreview } from "../../services/itunes";
 import { AlbumDetails } from "../AlbumDetails/AlbumDetails";
 import { Turntable } from "../Turntable/Turntable";
+import { Logo } from "../Logo/Logo";
 
 export const NowPlaying = ({ album, onReturn, onUpdate }) => {
   const [preview, setPreview] = useState({
@@ -56,7 +57,10 @@ export const NowPlaying = ({ album, onReturn, onUpdate }) => {
   }
 
   return (
-    <aside className="sticky top-4 self-start h-[calc(100vh-2rem)] p-8 flex flex-col gap-6">
+    <aside className="sticky top-4 self-start h-[calc(100vh-2rem)] px-8 pb-6 pt-6 flex flex-col gap-6">
+      <div className="shrink-0">
+        <Logo />
+      </div>
       <div
         aria-hidden="true"
         className="absolute right-0 top-8 bottom-8 w-px bg-line"
@@ -88,8 +92,8 @@ export const NowPlaying = ({ album, onReturn, onUpdate }) => {
           </button>
         )}
       </div>
-      <div className="flex min-h-0 flex-1 flex-col gap-6">
-        <div className="shrink-0 w-full max-w-[38vh]">
+      <div className="flex min-h-0 flex-1 flex-col gap-5">
+        <div className="shrink-0 w-full max-w-[32vh]">
           <Turntable
             album={album}
             isPlaying={isPlaying}
