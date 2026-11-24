@@ -44,6 +44,14 @@ function App() {
     setSelectedId((currentId) => (currentId === id ? null : currentId));
   }
 
+  function handleUpdate(id, updates) {
+    setAlbums((current) =>
+      current.map((album) =>
+        album.id === id ? { ...album, ...updates } : album,
+      ),
+    );
+  }
+
   function handleSelect(id) {
     setSelectedId((currentId) => (currentId === id ? null : id));
   }
@@ -71,7 +79,11 @@ function App() {
 
   return (
     <div className="min-h-screen grid grid-cols-[320px_1fr] p-4">
-      <NowPlaying album={selectedAlbum} onReturn={handleReturn} />
+      <NowPlaying
+        album={selectedAlbum}
+        onReturn={handleReturn}
+        onUpdate={handleUpdate}
+      />
       <Collection
         albums={albums}
         onSelect={handleSelect}

@@ -3,7 +3,7 @@ import { getPreview } from "../../services/itunes";
 import { AlbumDetails } from "../AlbumDetails/AlbumDetails";
 import { Turntable } from "../Turntable/Turntable";
 
-export const NowPlaying = ({ album, onReturn }) => {
+export const NowPlaying = ({ album, onReturn, onUpdate }) => {
   const [preview, setPreview] = useState({
     albumId: null,
     url: null,
@@ -97,7 +97,7 @@ export const NowPlaying = ({ album, onReturn }) => {
             onTogglePlay={togglePlay}
           />
         </div>
-        <AlbumDetails album={album} />
+        <AlbumDetails album={album} onUpdate={onUpdate} />
         <p role="status" className="font-mono text-xs text-muted">
           {isLoading && "Buscando a faixa…"}
           {isUnavailable && "Prévia indisponível para este disco"}
