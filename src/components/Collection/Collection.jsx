@@ -25,6 +25,11 @@ export const Collection = ({
 
   const genres = getGenres(albums);
   const activeGenre = genres.includes(selectedGenre) ? selectedGenre : null;
+
+  if (activeGenre === null && selectedGenre !== null) {
+    setSelectedGenre(null);
+  }
+
   const visibleAlbums = activeGenre
     ? albums.filter((album) => album.genre === activeGenre)
     : albums;
@@ -78,16 +83,6 @@ export const Collection = ({
   }
 
   function finishRemove(removed) {
-    const isLastOfFilteredGenre =
-      removed.genre === selectedGenre &&
-      !albums.some(
-        (album) => album.id !== removed.id && album.genre === removed.genre,
-      );
-
-    if (isLastOfFilteredGenre) {
-      setSelectedGenre(null);
-    }
-
     if (albums.length === 1) {
       setIsRemoving(false);
     }
