@@ -12,6 +12,7 @@ export const NowPlaying = ({ album, onReturn, onUpdate }) => {
   });
   const [playingUrl, setPlayingUrl] = useState(null);
   const audioRef = useRef(null);
+  const panelRef = useRef(null);
 
   useEffect(() => {
     if (!album) return;
@@ -56,8 +57,21 @@ export const NowPlaying = ({ album, onReturn, onUpdate }) => {
     }
   }
 
+  function showPanel() {
+    const prefersReducedMotion = window.matchMedia(
+      "(prefers-reduced-motion: reduce)",
+    ).matches;
+
+    const behavior = prefersReducedMotion ? "auto" : "smooth";
+
+    panelRef.current?.scrollIntoView({ behavior, block: "start" });
+  }
+
   return (
-    <aside className="lg:sticky lg:top-4 lg:self-start lg:h-[calc(100vh-2rem)] px-8 py-6 flex flex-col gap-6 order-last lg:order-0">
+    <aside
+      ref={panelRef}
+      className="lg:sticky lg:top-4 lg:self-start lg:h-[calc(100vh-2rem)] px-8 pt-6 pb-24 lg:pb-6 flex flex-col gap-6 order-last lg:order-0"
+    >
       <div className="hidden lg:block lg:shrink-0">
         <Logo />
       </div>
@@ -122,6 +136,34 @@ export const NowPlaying = ({ album, onReturn, onUpdate }) => {
           />
         )}
       </div>
+      {album && (
+        <div className="fixed inset-x-3 bottom-3 z-10 flex items-center gap-3 rounded-xl bg-ink px-4 py-3 text-paper shadow-lg lg:hidden">
+          <div className="min-w-0 flex-1">
+            <p className="truncate text-sm font-semibold">{album.title}</p>
+            <p className="truncate font-mono text-xs text-paper/70">
+              {album.artist}
+            </p>
+          </div>
+          <button
+            type="button"
+            onClick={showPanel}
+            className="shrink-0 cursor-pointer rounded-full border border-paper/40 px-3 py-1 font-mono text-xs uppercase tracking-widest text-paper focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-paper"
+            aria-label="Ver o disco no toca-discos"
+          >
+            Ver
+          </button>
+
+          <button
+            type="button"
+            onClick={togglePlay}
+            disabled={isLoading || isUnavailable}
+            aria-label={isPlaying ? "Pausar prévia" : "Tocar prévia"}
+            className="grid size-10 shrink-0 cursor-pointer place-items-center rounded-full bg-paper text-ink disabled:opacity-40"
+          >
+            {isPlaying ? "❚❚" : "▶"}
+          </button>
+        </div>
+      )}
     </aside>
   );
 };
