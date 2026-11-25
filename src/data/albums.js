@@ -7,7 +7,7 @@ export const albums = [
     genre: "Manguebeat",
     color: "#7a4e3b",
     height: 240,
-    note: "Álbum que mistura maracatu, rock e hip-hop e marcou o movimento manguebeat.",
+    note: "O disco que me apresentou Chico Science quando eu era criança. Misturou maracatu, rock e hip-hop, lançou o manguebeat e colocou Pernambuco no centro da música brasileira.",
     track: "A Cidade",
   },
   {
@@ -18,7 +18,7 @@ export const albums = [
     genre: "MPB",
     color: "#c98b3a",
     height: 232,
-    note: "Gravado durante o exílio em Londres, combina MPB, rock e influências internacionais.",
+    note: "Para mim, o melhor disco de Caetano. Gravado em Londres no fim do exílio imposto pela ditadura, mistura português e inglês, samba e rock, com uma saudade que atravessa as faixas.",
     track: "You Don't Know Me",
   },
   {
@@ -29,7 +29,7 @@ export const albums = [
     genre: "Reggae",
     color: "#4f6b55",
     height: 226,
-    note: "Um dos álbuns mais emblemáticos do reggae, com mensagens de resistência e esperança.",
+    note: "Bob Marley é o artista que eu mais gosto, e foi ele quem me fez gostar de reggae. Gravado em Londres depois do atentado que sofreu na Jamaica, é cheio de fé, resistência e amor.",
     track: "Jamming",
   },
   {
@@ -40,7 +40,7 @@ export const albums = [
     genre: "Rock",
     color: "#2f4a5a",
     height: 230,
-    note: "Disco que levou o grunge ao grande público, impulsionado pelo sucesso de Smells Like Teen Spirit.",
+    note: "O disco que me fez gostar de rock. Na adolescência, o Nirvana era a minha banda favorita, e foi com este álbum que o grunge saiu de Seattle e chegou ao mundo inteiro.",
     track: "Smells Like Teen Spirit",
   },
   {
@@ -51,7 +51,7 @@ export const albums = [
     genre: "Rock",
     color: "#6e8a8a",
     height: 238,
-    note: "Clássico dos Beatles, conhecido pela capa icônica e pela sequência musical do lado B.",
+    note: "O último disco gravado pelos Beatles, com a capa mais imitada da história e o medley do lado B, em que as músicas emendam umas nas outras como uma só.",
     track: "Come Together",
   },
   {
@@ -62,7 +62,7 @@ export const albums = [
     genre: "MPB",
     color: "#8a8a5c",
     height: 240,
-    note: "Explora as raízes brasileiras com sonoridades rurais, tropicalistas e nordestinas.",
+    note: "Primeiro disco da trilogia que segue com Refavela e Realce. Gil volta às raízes do sertão e mistura baião, forró e tropicalismo num dos marcos da música brasileira.",
     track: "Refazenda",
   },
   {
@@ -73,19 +73,19 @@ export const albums = [
     genre: "Rock",
     color: "#5c5470",
     height: 235,
-    note: "Álbum marcado por arranjos elaborados e letras introspectivas sobre relações e sentimentos.",
+    note: "Foi com ele que conheci de verdade o Los Hermanos. Estranhei o som, que mistura rock com samba e marchinha, e foi esse estranhamento que me abriu do rock para a MPB.",
     track: "Sentimental",
   },
   {
     id: 8,
-    title: "Tim Maia",
+    title: "Racional, Vol. 1",
     artist: "Tim Maia",
-    year: 1970,
+    year: 1975,
     genre: "Soul",
     color: "#a0503a",
     height: 230,
-    note: "Estreia solo que ajudou a consolidar o soul brasileiro, com a voz marcante de Tim Maia.",
-    track: "Azul da Cor do Mar",
+    note: "A obra-prima de Tim Maia, para mim. Gravado na fase em que ele seguiu a seita Cultura Racional, foi renegado pelo próprio autor e só redescoberto anos depois.",
+    track: "Imunização Racional (Que Beleza)",
   },
   {
     id: 9,
@@ -95,7 +95,7 @@ export const albums = [
     genre: "Rock",
     color: "#3d3b36",
     height: 240,
-    note: "Obra conceitual que aborda tempo, dinheiro, conflitos e aspectos da experiência humana.",
+    note: "Um disco perfeito do começo ao fim, e o que me fez gostar de Pink Floyd. Ganhei de uma amiga. Fala de tempo, dinheiro e loucura, e as faixas se emendam como uma obra só.",
     track: "Time",
   },
   {
@@ -106,7 +106,7 @@ export const albums = [
     genre: "Alternativo",
     color: "#b07a5a",
     height: 227,
-    note: "Mistura rock alternativo, hip-hop e música eletrônica em uma atmosfera sombria e experimental.",
+    note: "Conheci quando morei na Nova Zelândia: um amigo colocou o DVD do show Demon Days e eu virei fã. Uma banda de desenho animado misturando rock, hip-hop e eletrônica num clima sombrio.",
     track: "Feel Good Inc.",
   },
   {
@@ -117,7 +117,7 @@ export const albums = [
     genre: "Rock",
     color: "#9c6b6b",
     height: 232,
-    note: "Combina metal pesado, mudanças rítmicas e críticas sociais em faixas intensas e marcantes.",
+    note: "Eu era adolescente, aprendia violão e guitarra e tinha uma banda com os amigos da escola. Gostei na primeira audição, e duas músicas deste disco entraram no nosso repertório.",
     track: "Chop Suey!",
   },
   {
@@ -128,7 +128,7 @@ export const albums = [
     genre: "MPB",
     color: "#c98b3a",
     height: 238,
-    note: "Álbum emblemático da Tropicália e da MPB, com interpretações intensas e arranjos ousados.",
+    note: "Conheci Gal Costa ainda criança, pela minha mãe, que é muito fã dela. Este disco teve a capa censurada pela ditadura e chegou às lojas dentro de um envelope plástico azul.",
     track: "Índia",
   },
   {
@@ -139,7 +139,7 @@ export const albums = [
     genre: "MPB",
     color: "#6e8a8a",
     height: 229,
-    note: "Estreia que aproxima MPB, soul, dub e música eletrônica com sonoridade delicada.",
+    note: "Um disco em que gosto de todas as músicas. A estreia de Céu junta MPB, samba, soul, dub e eletrônica com uma voz suave e muita personalidade.",
     track: "Lenda",
   },
   {
@@ -150,7 +150,7 @@ export const albums = [
     genre: "MPB",
     color: "#4f6b55",
     height: 234,
-    note: "Disco experimental que mistura ritmos brasileiros, eletrônica e atmosferas psicodélicas.",
+    note: "O melhor disco de Otto e, para mim, um dos melhores da música brasileira: o auge dele. O título vem da primeira frase de A Metamorfose, de Kafka.",
     track: "Crua",
   },
   {
@@ -161,7 +161,7 @@ export const albums = [
     genre: "Rap",
     color: "#526b83",
     height: 236,
-    note: "Disco aclamado que transita entre rap, samba, soul e afrobeat com fortes crônicas urbanas.",
+    note: "Conheci Criolo com este disco e, por causa dele, passei a curtir mais rap. Vai do rap ao samba, ao afrobeat e ao reggae, com crônicas de São Paulo.",
     track: "Não Existe Amor em SP",
   },
   {
@@ -172,7 +172,7 @@ export const albums = [
     genre: "Manguebeat",
     color: "#6b5545",
     height: 233,
-    note: "Primeiro disco de estúdio homônimo pós-Chico Science, reafirmando o peso dos tambores e guitarras.",
+    note: "Para mim, o disco que consolidou a banda depois da morte de Chico Science, vindo logo após Rádio S.Amb.A. Os tambores de maracatu e as guitarras pesadas continuam no centro de tudo.",
     track: "Blunt of Judah",
   },
   {
@@ -183,7 +183,7 @@ export const albums = [
     genre: "MPB",
     color: "#8a7650",
     height: 231,
-    note: "Une samba, funk e referências esotéricas em um dos trabalhos mais celebrados de Jorge Ben.",
+    note: "Um dos grandes discos da música brasileira. Jorge Ben mistura samba, funk e violão com alquimia e referências esotéricas, como em Os Alquimistas Estão Chegando.",
     track: "Os Alquimistas Estão Chegando",
   },
   {
@@ -194,7 +194,7 @@ export const albums = [
     genre: "Alternativo",
     color: "#59616b",
     height: 228,
-    note: "Disco de estreia fundamental do novo pop/rock pernambucano dos anos 2000, unindo melodias solares a arranjos criativos.",
+    note: "Vi o Mombojó surgir em festivais pequenos no Recife, antes mesmo deste disco sair, e para mim é o melhor deles. A estreia da banda que renovou o pop pernambucano dos anos 2000.",
     track: "Deixe-se Acreditar",
   },
 ];
