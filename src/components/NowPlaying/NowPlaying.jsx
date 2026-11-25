@@ -57,13 +57,13 @@ export const NowPlaying = ({ album, onReturn, onUpdate }) => {
   }
 
   return (
-    <aside className="sticky top-4 self-start h-[calc(100vh-2rem)] px-8 pb-6 pt-6 flex flex-col gap-6">
-      <div className="shrink-0">
+    <aside className="lg:sticky lg:top-4 lg:self-start lg:h-[calc(100vh-2rem)] px-8 py-6 flex flex-col gap-6 order-last lg:order-0">
+      <div className="hidden lg:block lg:shrink-0">
         <Logo />
       </div>
       <div
         aria-hidden="true"
-        className="absolute right-0 top-8 bottom-8 w-px bg-line"
+        className="absolute right-0 top-8 bottom-8 w-px bg-line hidden lg:block"
       />
       <div className="shrink-0 flex items-center justify-between">
         <span className="font-mono text-sm text-ember uppercase tracking-widest">

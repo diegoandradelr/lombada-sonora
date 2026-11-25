@@ -5,6 +5,7 @@ import { AlbumSearch } from "../AlbumSearch/AlbumSearch";
 import { getGenres } from "../../utils/getGenres";
 import { GenreFilter } from "../GenreFilter/GenreFilter";
 import { ConfirmRemove } from "../ConfirmRemove/ConfirmRemove";
+import { Logo } from "../Logo/Logo";
 
 export const Collection = ({
   albums,
@@ -94,6 +95,9 @@ export const Collection = ({
 
   return (
     <main className="p-6">
+      <div className="mb-10 lg:hidden">
+        <Logo />
+      </div>
       <div className="mb-8 flex items-center justify-between gap-4">
         <h1 className="font-display text-3xl font-bold">Minha estante</h1>
         {albums.length > 0 && (
