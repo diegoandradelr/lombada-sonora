@@ -135,7 +135,7 @@ export const AlbumSearch = ({ albums, onAdd, inputRef }) => {
                 <span
                   tabIndex={-1}
                   ref={(element) => registerOwned(album.id, element)}
-                  className="ml-auto shrink-0 font-mono text-xs text-muted outline-none focus-visible:text-ink"
+                  className="ml-auto shrink-0 font-mono text-xs text-muted rounded-sm focus-visible:text-ink focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-ink"
                 >
                   Na estante
                 </span>

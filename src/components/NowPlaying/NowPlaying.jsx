@@ -160,9 +160,27 @@ export const NowPlaying = ({ album, onReturn, onUpdate }) => {
             onClick={togglePlay}
             disabled={isLoading || isUnavailable}
             aria-label={isPlaying ? "Pausar prévia" : "Tocar prévia"}
-            className="grid size-10 shrink-0 cursor-pointer place-items-center rounded-full bg-paper text-ink disabled:opacity-40"
+            className="grid size-10 shrink-0 cursor-pointer place-items-center rounded-full bg-paper text-ink disabled:cursor-not-allowed disabled:opacity-40 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-paper"
           >
-            {isPlaying ? "❚❚" : "▶"}
+            {isPlaying ? (
+              <svg
+                viewBox="0 0 24 24"
+                fill="currentColor"
+                className="size-4"
+                aria-hidden="true"
+              >
+                <path d="M6 5h4v14H6zM14 5h4v14h-4z" />
+              </svg>
+            ) : (
+              <svg
+                viewBox="0 0 24 24"
+                fill="currentColor"
+                className="size-4 translate-x-px"
+                aria-hidden="true"
+              >
+                <path d="M8 5v14l11-7z" />
+              </svg>
+            )}
           </button>
         </div>
       )}

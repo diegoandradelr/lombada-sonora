@@ -94,7 +94,7 @@ export const Collection = ({
   }
 
   return (
-    <main className="px-3 py-6 lg:col-start-2 lg:row-start-1 lg:p-6">
+    <main className="min-w-0 px-3 py-6 lg:col-start-2 lg:row-start-1 lg:p-6">
       <div className="mb-10 lg:hidden">
         <Logo />
       </div>
