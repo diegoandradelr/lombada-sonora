@@ -54,7 +54,7 @@ export const AlbumDetails = ({ album, onUpdate }) => {
                   note: event.target.value,
                 }))
               }
-              className="w-full resize-none bg-transparent border border-line rounded-sm p-2 text-sm leading-relaxed outline-none focus:border-ink"
+              className="w-full resize-none bg-transparent border border-line rounded-sm p-2 text-base lg:text-sm leading-relaxed outline-none focus:border-ink"
             />
             <label
               htmlFor="album-genre"
@@ -71,7 +71,7 @@ export const AlbumDetails = ({ album, onUpdate }) => {
                   genre: event.target.value,
                 }))
               }
-              className="w-full bg-transparent border border-line rounded-sm p-2 text-sm outline-none focus:border-ink"
+              className="w-full bg-transparent border border-line rounded-sm p-2 text-base lg:text-sm outline-none focus:border-ink"
             >
               {GENRES.map((genre) => (
                 <option key={genre} value={genre}>

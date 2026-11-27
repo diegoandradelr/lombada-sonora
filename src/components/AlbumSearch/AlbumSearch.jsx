@@ -83,7 +83,7 @@ export const AlbumSearch = ({ albums, onAdd, inputRef }) => {
         placeholder="Buscar disco ou artista… (atalho: /)"
         aria-keyshortcuts="/"
         autoComplete="off"
-        className="w-full bg-transparent border-b border-line py-2 font-mono text-sm placeholder:text-muted outline-none focus:border-ink"
+        className="w-full bg-transparent border-b border-line py-2 font-mono text-base lg:text-sm placeholder:text-muted outline-none focus:border-ink"
         onKeyDown={(event) => {
           if (event.key === "Escape") {
             clearSearch();
