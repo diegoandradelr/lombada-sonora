@@ -20,7 +20,7 @@ export const Logo = () => {
           stroke="#3a4a3e"
           strokeWidth="1"
         />
-        <circle cx="24" cy="27" r="3.8" fill="#d4622a" />
+        <circle cx="24" cy="27" r="3.8" fill="#b9531f" />
         <circle cx="24" cy="27" r="0.9" fill="#1f2a22" />
         <rect x="34" y="12" width="9" height="29" rx="1.5" fill="#2e4a5e" />
         <rect x="3" y="41" width="42" height="4" rx="1" fill="#9b6a43" />

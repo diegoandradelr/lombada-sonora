@@ -80,7 +80,8 @@ export const NowPlaying = ({ album, onReturn, onUpdate }) => {
         className="absolute right-0 top-8 bottom-8 w-px bg-line hidden lg:block"
       />
       <div className="shrink-0 flex items-center justify-between">
-        <span className="font-mono text-sm text-ember uppercase tracking-widest">
+        <span className="flex items-center gap-2 font-mono text-sm text-ink uppercase tracking-widest">
+          <span aria-hidden="true" className="size-2 rounded-full bg-ember" />
           Tocando agora
         </span>
         {album && (

@@ -37,7 +37,7 @@ export const Spine = ({
       <span className="font-bold  text-xs tracking-wide truncate max-h-36">
         {title}
       </span>
-      <span className="font-mono text-paper/80 text-[10px] tracking-wider truncate max-h-24">
+      <span className="font-mono text-paper text-[10px] tracking-wider truncate max-h-24">
         {artist}
       </span>
       {isRemoving && (
