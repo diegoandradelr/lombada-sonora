@@ -14,7 +14,7 @@ export const Shelf = ({
   return (
     <div className="w-full ">
       <div
-        className={`flex items-end gap-1 px-4 ${
+        className={`flex items-end gap-1 px-2 lg:px-4 ${
           albums.length === 0 ? "min-h-60 pb-4" : ""
         }`}
       >

@@ -31,7 +31,7 @@ export const Spine = ({
           onLeaveEnd();
         }
       }}
-      aria-label={isRemoving ? `Remover ${title}` : undefined}
+      aria-label={isRemoving ? `Remover ${title}` : `${title}, ${artist}`}
       aria-pressed={isRemoving ? undefined : isSelected}
     >
       <span className="font-bold  text-xs tracking-wide truncate max-h-36">
