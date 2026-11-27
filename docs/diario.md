@@ -379,13 +379,180 @@ Modelo para as próximas entradas:
 
 ---
 
+## Sessão 9: editar a ficha do disco
+
+**O que fiz**
+
+- Botão "Editar" na ficha do painel: a nota vira um campo de texto e o gênero vira uma lista de opções, com "Salvar" e "Cancelar".
+- Função `handleUpdate` no `App`, que troca um disco da coleção por uma cópia com as mudanças. Como a coleção é salva no navegador, as edições continuam lá depois de recarregar.
+- Quando um gênero deixa de existir (por remoção ou por edição), o filtro volta para "Todos".
+- A ficha passou a rolar sozinha quando não cabe no painel, com uma barra de rolagem fina e da cor das linhas da estante.
+
+**Decisões**
+
+- **Editar no painel, com um botão "Editar"**, e não com campos sempre abertos: a ficha continua bonita enquanto eu só estou ouvindo, e dá para desistir com "Cancelar".
+- **Só a nota e o gênero são editáveis.** Título, artista e ano vêm da loja e estão certos.
+- **O texto digitado é um rascunho com etiqueta** (`{ albumId, note, genre }`), guardado no `AlbumDetails`, que nunca sai da tela. Se eu clicar em outro disco sem querer, o rascunho continua guardado e reaparece quando eu volto. Nada é salvo na coleção sem clicar em "Salvar". Existe um rascunho por vez.
+- **O `isEditing` é calculado**, comparando a etiqueta do rascunho com o disco do painel. Trocando de disco, a ficha volta ao normal sozinha, sem `useEffect` e sem `key`.
+- **Sem `key` no `AlbumDetails` para "zerar" o estado:** ele tem o `aria-live`, e o leitor de tela só anuncia mudanças numa área que já existia antes. Recriar o componente a cada disco quebraria o anúncio.
+- **O formulário fica fora da área do `aria-live`**, senão cada letra digitada seria anunciada.
+- **"Salvar" é `type="submit"`, com o `onSubmit` no `<form>`**: dá para salvar com `Enter`. O "Cancelar" é `type="button"`, senão também enviaria o formulário.
+- **A lista de gêneros do formulário é a completa** (`GENRES`), e não só os que têm discos, para dar para escolher um gênero que ainda não está na estante. Sem opção vazia: todo disco tem um gênero, e "Outros" serve para o que não se encaixa.
+- **"Gênero escolhido" e "gênero ativo" são coisas diferentes.** O `selectedGenre` guarda a escolha; o `activeGenre` é calculado e só vale se o gênero ainda existe na estante. Quando o gênero escolhido some, a escolha é esquecida durante a renderização, e não num efeito, para a tela nunca aparecer errada.
+- **A ficha rola, e não o painel inteiro:** o toca-discos e o "Devolver" ficam parados. Comparei com o modal de foto do projeto Dogs, que faz o mesmo com os comentários. Encolher o toca-discos ou editar num modal resolveriam, mas dariam mais trabalho ou mudariam o desenho.
+- **Hover do "Salvar" sublinhado, e não laranja**, para seguir a regra de que o laranja é reservado para destaques.
+
+**Problemas e soluções**
+
+- **O "Editar" continuava aberto ao trocar de disco** → o React reaproveita o componente e só troca a prop `album`, então um `isEditing` com `true`/`false` sobrevivia à troca → guardar o `id` do disco em edição, e não um `true`.
+- **O "Editar" não abria** → o botão guardava `true` em vez do `id`, e a comparação `true === 1` nunca é verdadeira → `setEditingId(album.id)`.
+- **Ao usar o `isEditing`, comparei de novo com o `id`** (`isEditing === album.id`), o que dava sempre `false` → o `isEditing` já é a resposta pronta; usar sozinho.
+- **A página quebrava ao abrir** → `draft.albumId` com o `draft` ainda `null` → `draft?.albumId`. E, sem a proteção `album !== undefined`, `undefined === undefined` dava `true` sem disco nenhum.
+- **O "Salvar" não salvava nada** → o `onUpdate(draft)` mandava o rascunho inteiro como se fosse o `id` → `onUpdate(draft.albumId, { note, genre })`. Não mando o rascunho inteiro como mudança, para a etiqueta `albumId` não ir parar dentro do disco.
+- **Ao mudar os dois discos de Manguebeat para Rock com o filtro Manguebeat ativo, a estante dizia "Sua estante está vazia"** → o filtro apontava para um gênero que não existia mais → filtro ativo calculado (`genres.includes(selectedGenre)`). A correção que eu tinha feito na sessão 7 só valia para a remoção.
+- **Depois, ao voltar um disco para Manguebeat, o filtro "ressuscitava" sozinho** → o `selectedGenre` antigo continuava guardado, só escondido → esquecer a escolha quando o gênero some. Isso também deixou desnecessário o bloco antigo no `finishRemove`, que apaguei.
+- **O formulário saía da tela embaixo** → o painel tem a altura exata da tela → a ficha ganhou `min-h-0` e `overflow-y-auto`, e o toca-discos, o cabeçalho e o status ganharam `shrink-0`.
+- **A rolagem não funcionava** → uma `div` no meio não tinha limite de altura, então a ficha nunca "ficava sem espaço" → `min-h-0 flex-1` também nela. O limite de altura precisa passar de nível em nível.
+- **O contorno de foco do "Salvar" aparecia cortado** → um elemento com `overflow-y-auto` também corta na horizontal → `-mx-2 px-2`: espaço interno com margem negativa, para o conteúdo não sair do lugar.
+- **O nome da faixa ficava longe da ficha** → o `flex-1` esticava a ficha até o fim do painel → tirei o `flex-1` da ficha; o `min-h-0` sozinho já deixa ela encolher.
+- **Uma sugestão automática do editor (Copilot) propôs mudar uma linha** que eu não tinha entendido → não aceitei sem entender.
+
+**Aprendi**
+
+- `.map()` com ternário para trocar um item de uma lista sem modificar o estado, e `{ ...objeto, ...mudancas }` para copiar e sobrescrever propriedades.
+- Rascunho de formulário: o que está sendo digitado é diferente do que está salvo.
+- `<textarea>` e `<select>` controlados, com `value` e `onChange`.
+- `<form>` com `onSubmit` e `event.preventDefault()`, e a diferença entre `type="submit"` e `type="button"`.
+- O React deixa mudar o estado do próprio componente durante a renderização, dentro de um `if` cuja condição deixa de ser verdadeira depois da mudança.
+- `includes` para saber se uma lista contém um valor.
+- Colando linhas que começam com `[` no console, o JavaScript junta tudo numa expressão só.
+- Um item de flex não encolhe menos que o conteúdo sem `min-h-0` (na altura) ou `min-w-0` (na largura).
+- `scrollbar-width` e `scrollbar-color` para uma barra de rolagem discreta.
+- Margem negativa com espaço interno (`-mx-2 px-2`) para criar folga sem mover o conteúdo.
+- Não aceitar sugestões automáticas de código sem entender o que elas fazem.
+
+---
+
+## Sessão 10: logo e favicon
+
+**O que fiz**
+
+- Logo da Lombada Sonora: duas lombadas com um disco de vinil em pé no meio, apoiados numa tábua, e o nome com "Sonora" em laranja.
+- Componente `Logo`, com o SVG direto no JSX.
+- Ícone da aba do navegador (favicon) com o mesmo símbolo.
+
+**Decisões**
+
+- **Escolhi o símbolo comparando versões lado a lado**: três lombadas, lombada com disco e "equalizador de lombadas". Fiquei com uma mistura das duas primeiras, a mais legível em tamanho pequeno.
+- **O disco ganhou uma borda clara**, para não sumir sobre fundos escuros.
+- **"Sonora" em laranja.** O laranja é reservado para destaques da interface; a logo é exceção, porque é identidade, e não um estado.
+- **A logo fica no topo do painel**, alinhada com o "Minha estante" da outra coluna. Testei acima do "Minha estante" e no painel, e o painel ficou melhor.
+- **Logo maior e título menor** (`text-2xl` e `text-3xl`), para os dois terem pesos parecidos no topo.
+- **A margem em volta da logo fica em quem usa o componente**, e não dentro dele, para a logo poder ser usada em outros lugares.
+
+**Problemas e soluções**
+
+- **O SVG no JSX** → atributos com hífen viram camelCase (`stroke-width` → `strokeWidth`), e o `xmlns` não é necessário. O símbolo ganhou `aria-hidden="true"`, porque o nome ao lado já diz tudo.
+- **A logo criava barra de rolagem no painel** → o toca-discos passou de `38vh` para `32vh`, e os espaços do painel diminuíram.
+- **A logo ficava mais baixa que o "Minha estante"** → o painel tinha mais espaço interno em cima que a estante → `pt-6` nos dois.
+- **O favicon já estava configurado no `index.html`, mas o arquivo não existia** → a aba ficava sem ícone. Coloquei o `favicon.svg` na pasta `public`.
+- **Mudei as alturas no `albums.js` e nada mudava na tela** → a coleção vem do `localStorage`, e o `albums.js` só é lido quando não há nada salvo → apagar a chave no DevTools para ver as mudanças.
+
+**Aprendi**
+
+- SVG no JSX e a diferença para um arquivo `.svg` solto.
+- O que está na pasta `public` é servido na raiz do site (`/favicon.svg`).
+- O VS Code abre `.svg` como imagem; para ver o código, "Abrir com... → Editor de Texto".
+- `Ctrl + H` para substituir dentro de um arquivo, e `Ctrl + Shift + H` no projeto inteiro.
+- A extensão do Tailwind sugere a classe "oficial" quando existe (`scrollbar-thin` no lugar de `[scrollbar-width:thin]`).
+- Proximidade: elementos perto uns dos outros parecem do mesmo grupo.
+
+---
+
+## Sessão 11: celular e publicação
+
+**O que fiz**
+
+- Layout para celular: uma coluna só, com a logo, a estante e, no fim, o painel do toca-discos.
+- Mini player no celular: uma barra escura presa no pé da tela, com o título, o artista, o botão "Ver" (que rola a página até o painel) e o play/pausa.
+- Notas dos discos reescritas com frases minhas. O disco do Tim Maia virou o _Racional, Vol. 1_, e a nota do _Nação Zumbi_ foi corrigida.
+- Projeto publicado na Vercel: [lombada-sonora.vercel.app](https://lombada-sonora.vercel.app).
+
+**Decisões**
+
+- **Mobile-first com o prefixo `lg:`**: sem prefixo vale para todas as telas; com `lg:`, só a partir de 1024px. As duas colunas, o painel preso e a altura da tela viraram `lg:`.
+- **No celular, a estante vem primeiro**: quem abre o link vê logo a ideia do projeto, e não um toca-discos vazio.
+- **Mini player simplificado**: a barra controla a música de qualquer prateleira, e o "Ver" rola até o painel, em vez de abrir um painel por cima da página. Fica para uma versão futura, sem jogar nada fora.
+- **A barra mora no `NowPlaying`**, onde já estão o disco, o `isPlaying` e o `togglePlay`, sem precisar elevar estado.
+- **Duas logos**: uma no topo da estante, só no celular (`lg:hidden`), e outra no painel, só no computador (`hidden lg:block`). É o mesmo componente usado duas vezes.
+- **A rolagem do "Ver" respeita o "reduzir movimento"**: suave normalmente, instantânea para quem pediu menos movimento.
+- **O "Ver" tem um `aria-label` mais completo** ("Ver o disco no toca-discos"), porque "Ver" sozinho não diz nada para quem usa leitor de tela.
+- **Textura do fundo mais discreta**: no celular, os pontos ficavam muito visíveis, porque a tela tem mais pixels por centímetro. Pontos menores e mais transparentes resolveram nas duas telas.
+
+**Problemas e soluções**
+
+- **A barra cobria o nome da faixa no fim da página** → um elemento `fixed` não ocupa espaço → `pb-24` no painel, só no celular.
+- **O título não aparecia na barra** → usei `album.name`, que não existe; o certo é `album.title`. Um `undefined` não dá erro, só não mostra nada.
+- **Achei que a busca cortava no iPhone por causa do código antigo** → a Vercel já estava publicada; o motivo era outro (ver sessão 12).
+
+**Aprendi**
+
+- `order-last`, `hidden` e `lg:block` para mudar a ordem e a visibilidade conforme o tamanho da tela.
+- `position: fixed`, `inset-x-*` e `z-10`.
+- `scrollIntoView({ behavior, block })` para rolar a página até um elemento.
+- Propriedade abreviada: `{ behavior }` é o mesmo que `{ behavior: behavior }`.
+- Publicar na Vercel: ela reconhece o Vite sozinha (`npm run build` e a pasta `dist`), e cada `git push` publica uma versão nova.
+- Salvar só muda o meu computador; o commit guarda no histórico, ainda no meu computador; o push manda para o GitHub, e aí a Vercel publica.
+- A textura de pontos do fundo é um `radial-gradient` pequeno repetido pelo `background-size`, como um carimbo.
+
+---
+
+## Sessão 12: revisão para o portfolio
+
+**O que fiz**
+
+- Revisão completa do projeto para o portfolio: organização, boas práticas e acessibilidade, com a ferramenta axe em dez situações (computador e celular; página inicial, disco tocando, edição, modo de remover e modal). Os 24 problemas de contraste viraram zero.
+- Imagem para o cartão de compartilhamento (`og-image.png`) e metadados novos no `index.html`.
+- README novo em inglês e em português, com o link do site, a imagem, as funcionalidades, a acessibilidade, as decisões técnicas e os desafios.
+- Página do repositório no GitHub com descrição, link do site e tópicos.
+
+**Decisões**
+
+- **Cores das lombadas mais escuras** nas seis cores claras, para o texto claro ter contraste suficiente. O nome do artista deixou de ser semitransparente.
+- **O cinza `muted` ficou um pouco mais escuro** (`#576357`), para passar no contraste mínimo sobre o verde-sálvia.
+- **O laranja ficou mais fechado** (`#b9531f`), e o "Tocando agora" passou a ser escrito em `ink`, com um ponto laranja ao lado. Comparei quatro opções lado a lado.
+- **A ordem no código passou a ser a mesma da tela no celular**: a estante vem antes do painel, e no computador o grid posiciona as colunas (`lg:col-start-*`). O `order-last` só mudava a ordem visual, e o teclado seguia a ordem do código.
+- **README em dois arquivos** (`README.md` em inglês e `README.pt-BR.md` em português), com um link para o outro no topo. O diário continua em português.
+
+**Problemas e soluções**
+
+- **Contraste insuficiente nas lombadas, no cinza e no laranja** → calculei cores com contraste de pelo menos 4,5:1 (texto pequeno) e 3:1 (texto grande e contornos de foco).
+- **Rolagem lateral em telas de 320px** → seis lombadas mais as margens davam 372px → margens menores só no celular.
+- **O leitor de tela lia "CaosChico" colado** → o título e o artista são dois `<span>` sem espaço entre eles → `aria-label` com `"título, artista"`.
+- **A busca empurrava a página para fora da tela no celular** → um item de grid não encolhe menos que o conteúdo, e o `truncate` impede o texto de quebrar → `min-w-0` no `<main>`.
+- **No iPhone, a página dava zoom ao tocar na busca** → o Safari amplia campos com letra menor que 16px → `text-base lg:text-sm` nos campos.
+- **Os ícones da barra do celular viravam emoji no iPhone** → troquei os caracteres `▶` e `❚❚` pelos SVGs do toca-discos.
+- **A descrição do site ainda dizia "Sala de Escuta"** e o `theme-color` era de outra paleta → metadados novos, com as tags Open Graph para o LinkedIn.
+- **O "Na estante" recebia foco quase sem indicação** → contorno de foco igual ao dos botões.
+
+**Aprendi**
+
+- Contraste mínimo da WCAG: 4,5:1 para texto pequeno, 3:1 para texto grande e para contornos de foco.
+- A ferramenta axe encontra muitos problemas sozinha, mas não calcula contraste sobre fundos com textura: esses precisam ser conferidos à mão.
+- A WCAG pede que a página funcione em 320px sem rolagem lateral.
+- A ordem do código é a ordem do teclado e do leitor de tela; o CSS só muda a ordem visual.
+- O Safari do iPhone dá zoom em campos com letra menor que 16px.
+- Tags Open Graph e o Post Inspector do LinkedIn para conferir o cartão de compartilhamento.
+- Testar num celular de verdade mostra coisas que o DevTools não mostra.
+
+---
+
 ## Pendências
 
-- **Editar a ficha do disco:** permitir escrever ou editar a nota e mudar o gênero de qualquer disco, inclusive os adicionados pela busca (um disco de manguebeat adicionado pela busca chega como MPB, porque a loja não tem essa informação). Provável lugar: no painel "Tocando agora", abaixo da ficha. É o próximo passo: com a sessão 8 pronta, as mudanças já ficam salvas ao recarregar a página.
-- **Para pensar:** o disco deveria começar a tocar sozinho ao ser selecionado, ou só ao apertar o play?
+- **Versão completa do mini player:** um painel que abre por cima da página no celular, em vez de rolar até ele.
 - **Melhoria futura:** "Desfazer" depois de remover um disco, em vez de (ou além de) confirmar antes.
-- Reescrever as notas dos discos com frases pessoais.
-- Corrigir a nota do disco _Nação Zumbi_ (o primeiro de estúdio pós-Chico Science foi _Rádio S.Amb.A_, de 2000).
+- **Testes:** começar pelas funções de `utils` (`isSameAlbum`, `chunk`, `getGenres`) com Vitest.
 - Conhecer o Context para reduzir o _prop drilling_.
-- Layout para celular.
-- Seção "Desafios e aprendizados" no README, a partir deste diário.
+- Deixar o `useLocalStorage` genérico de verdade (hoje ele só aceita listas salvas).
+- Proteger o `setItem` do `useLocalStorage` com `try/catch`, como a leitura.
+- **Versão 2:** contas de usuário e banco de dados (Supabase), com um link público para a estante de cada pessoa.
