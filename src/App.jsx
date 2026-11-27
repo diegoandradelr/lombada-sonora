@@ -79,11 +79,6 @@ function App() {
 
   return (
     <div className="min-h-screen grid lg:grid-cols-[320px_1fr] p-2 lg:p-4">
-      <NowPlaying
-        album={selectedAlbum}
-        onReturn={handleReturn}
-        onUpdate={handleUpdate}
-      />
       <Collection
         albums={albums}
         onSelect={handleSelect}
@@ -92,6 +87,11 @@ function App() {
         activeFilterRef={activeFilterRef}
         onAdd={handleAdd}
         onRemove={handleRemove}
+      />
+      <NowPlaying
+        album={selectedAlbum}
+        onReturn={handleReturn}
+        onUpdate={handleUpdate}
       />
     </div>
   );

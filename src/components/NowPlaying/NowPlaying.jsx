@@ -70,7 +70,8 @@ export const NowPlaying = ({ album, onReturn, onUpdate }) => {
   return (
     <aside
       ref={panelRef}
-      className="lg:sticky lg:top-4 lg:self-start lg:h-[calc(100vh-2rem)] px-8 pt-6 pb-24 lg:pb-6 flex flex-col gap-6 order-last lg:order-0"
+      aria-label="Tocando agora"
+      className="lg:sticky lg:top-4 lg:self-start lg:h-[calc(100vh-2rem)] px-8 pt-6 pb-24 lg:pb-6 flex flex-col gap-6 lg:col-start-1 lg:row-start-1"
     >
       <div className="hidden lg:block lg:shrink-0">
         <Logo />
